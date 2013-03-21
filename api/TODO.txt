@@ -1,0 +1,35 @@
+(Note: these are 8 years old and likely outdated)
+
+
+TODO List
+
+Parser:
+- BUG: EOF nach Kommentar wird als Fehler gemeldet ???
+- Error Recovery
+- brauchbare Fehlermeldungen
+
+Sprache:
+- syntactic sugar: elsif !!!
+- inout
+
+GUI:
+- Spaltenbreite in Tabellen automatisch anpassen (tw.)
+- JDesktopPane scrollable
+- Aenderungen-Speichern-Dialog auch bei Programmende
+
+Simulator:
+- Internationalisierung Laufzeitfehler in SimObj-Hierarchie
+- (BitVector usw. durch java.util.BitSet ersetzen)
+- Software-Ergonomie: Rueckfragen, Editor-Undo
+- bei Pretty-Print Kommentare erhalten
+- Signale eintragen
+- Icons
+
+VHDL:
+- Irgendwas stimmt mit dem Bus-0-Treiber nicht
+- Optimierung des Steuerwerksautomaten
+
+Hilfe:
+- MEHR DOKU
+- Entwurfs-Doku FPGA Advantage
+

@@ -1,0 +1,106 @@
+# RTeasy-Grammatik, so wie der Parser aufgebaut ist. LL(2)
+# Erweitert um die Registerarray Deklaration und die Switch-Case Konstruktion:
+
+	rt_program	:=	( "component" id ";" )? declarations statement_sequence <EOF>
+
+	declarations	:=	declaration ";" ( declarations )?
+
+	declaration	:=	"declare" ( register_decl | bus_decl | memory_decl | reg_array_decls )
+
+	register_decl	:=	"register" reg_bus_decl_list
+
+	bus_decl	:=	( "in" | "out" | "inout" )? "bus" reg_bus_decl_list
+
+	memory_decl	:=	"memory" mem_decl_list
+	
+	reg_array_decls := "register array" reg_array_decl_list
+
+	reg_bus_decl_list	:=	reg_bus_decl ( "," reg_bus_decl_list )?
+
+	reg_bus_decl	:=	id ( bit_range )?
+
+	mem_decl_list	:=	mem_decl ( "," mem_decl_list )?
+
+	mem_decl	:=	id "(" id "," id ")"
+	
+	reg_array_decl_list := reg_array_dec ( "," reg_array_dec )?
+	
+	reg_array_dec := id ( bit_range )? "[" id "]" 
+
+	bit_range	:=	"(" ( dec_num | bit_str )
+					( ":" ( dec_num | bit_str ) )?
+				")"
+
+	statement_sequence	:=	outer_parallel_statements 
+					( "|" outer_parallel_statements )?
+					";" ( statement_sequence )?
+
+	outer_parallel_statements	:=	( label )? ( statement | if_statement | switch_statement )
+						( "," outer_parallel_statements )?
+
+	if_statement	:=	"if" expression "then" inner_parallel_statements
+				( "else" inner_parallel_statements )? "fi"
+
+	switch_statement := "switch" id (bit_range)? "{" case_list ( default_list )? "}"
+	
+	case_list := "case" num_constant ":" inner_parallel_statements
+	
+	default_list := "default" ":" inner_parallel_statements
+
+	inner_parallel_statements	:=	( statement | if_statement | switch_statement )
+						( "," inner_parallel_statements )?
+
+	label	:=	id ":"
+
+	expression	:=	( expression_or ( "xor" expression_or )* )
+
+	expression_or	:=	( expression_nor ( "or" expression_nor )* )
+
+	expression_nor	:=	( expression_and ( "nor" expression_and )* )
+
+	expression_and	:=	( expression_nand ( "and" expression_nand )* )
+
+	expression_nand	:=	( expression_not ( "nand" expression_not )* )
+
+	expression_not	:=	( "not" expression_not | expression_cmpu )
+
+	expression_cmpu	:=	( ( expression_cmpo ( ( "=" | "<>" ) expression_cmpo )? ) )
+
+	expression_cmpo	:=	( ( expression_plus ( ( "<" | "<=" | ">" | ">=" )
+				expression_plus )? ) )
+
+	expression_plus	:=	( expression_sign ( ( "+" | "-" ) expression_sign )* )
+
+	expression_sign	:=	( "-" expression_sign | expression_concat )
+
+	expression_concat	:=	( expression_select ( "." expression_select )* )
+
+	expression_select	:=	expression_leaf
+					( ( bit_range | "[" expression "]" ) )?
+
+	expression_leaf	:=	( "(" expression ")" | num_constant | expression_var )
+
+	expression_var	:=	id
+
+	num_constant	:=	( dec_num | bit_str | bin_num | hex_num )
+
+	lval_expression	:=	lval_expression_leaf ( "." lval_expression )?
+
+	lval_expression_leaf	:=	( id ( ( bit_range | "[" expression "]" ) )? 
+						| "_" ( "[" dec_num "]" | ( "_" )* ) )
+
+	statement	:=	( lval_expression "<-" expression
+				| "read" id
+				| "write" id
+				| "goto" ( id | "end" )
+				| "nop" )
+
+	id	:=	["A"-"Z"] (["A"-"Z"] | ["0"-"9"] | "_")*
+
+	bin_num	:=	"%" ("0"|"1")+
+
+	bit_str :=	("0"|"1")+
+
+	hex_num :=	"$" (["0"-"9"] | ["A"-"F"])+
+
+	dec_num :=	(["0"-"9"])+	

@@ -1,0 +1,123 @@
+-------------------------------------------------------------------------------
+ 
+ Author: Hagen Schendel
+ 
+ -----------------
+ | INSIDE RTEASY |
+ -----------------
+ 
+ - Documentation that does not fit into a single class
+ - Possibly to be used as package documentation for de.uni_luebeck.iti.rteasy
+ 
+ To see the maintenance window, use the command "showstack". 
+ 
+ Expressions
+=============
+
+ RTeasy Syntax
+---------------
+
+<Expression>      ::= <Expression> <BinOp> <Expression>
+                    | <MonOp> <Expression>
+                    | <Expression> "[" <Expression> "]"               
+                       (* bit selection *)
+                    | <Expression> "[" <NumConst> ":" <NumConst> "]"  
+                       (* fixed range selection *)
+                    | <Expression> "." <Expression>                   
+                       (* concatenation *)
+                    | <Identifier>                                    
+                       (* Register/Bus reference *)
+                    | <NumConst>
+                    ;
+               
+<LvalExpression>  ::= <LvalExpression> "." <LvalExpression>           
+                       (* concatenation *)
+                    | <Identifier> "[" <Expression> "]"               
+                       (* Register/Bus bit selection *)
+                    | <Identifier> "[" <NumConst> ":" <NumConst> "]"
+                       (* Register/Bus fixed range selection *)
+                    | <Spacer>
+                    ;
+                    
+<Spacer>          ::= ("_")+
+                    | "_" "[" <NumConst> "]"
+                    ;
+
+Associativity
+ - all binary word operators (xor,or,nor,and,nand,+,-) are left-associative
+ - associativity of concatenation is not important
+ - comparison operators do not have any associativity
+ 
+Operator Precedence Table
+
+ Prec. | Operators
+--------------------------------
+     0 | xor                       least
+     1 | or
+     2 | nor
+     3 | and
+     4 | nand
+     5 | not
+     6 | =,<>
+     7 | <,<=,>,>=
+     8 | +,-
+     9 | - (sign)
+    10 | . (concatenation)
+    11 | [ (selection)
+    12 | everything else           strongest
+
+ Semantic Analysis
+-------------------
+
+ Conditions to be met by an Expression :
+  - Bus/Register ref.: declared
+  - numerical constant: nothing to be checked
+  - word operators: nothing to be checked (see bit width derivation)
+  - fixed range/bit selection: check if parameter fits in operand range
+ 
+ Bit Width Derivation
+----------------------
+
+ The bit width of Expression objects can be determined during build-up as a
+ combination of bottum-up and top-down attributing:
+
+ - Bottom-Up:
+   - constants have fixed width
+   - unary operators sign and not pass width of operand
+   - binary word operators (xor,or,nor,and,nand,+,-) pass maximum
+     width of both operand and call o.setWidth(maximum) where o is
+     the smaller operand (see top-down)
+   - comparison operators and bit selection return width 1
+   - range selection returns width of selection
+   - concatenation returns width of sum
+ - Top-Down
+   - Top-Down is necessary when
+     - making sure that both operands of a word operator have the same width
+     - at building up an assignment Statement, the right-hand Expression needs
+       to have the width of the left-side LvalExpression (which is simply
+       derived bottom-up)
+ 
+ Evaluation
+------------
+ 
+ Evaluation of Expressions is a simulation topic only. It covers the methods
+ used to cover the hardware-like semantics of RTeasy.
+ In simulation (not in hardware) there are two phases in which evaluation
+ may actually happen:
+  1. The normal case, indicating that the Register values derived in
+     the last cycle should be used.
+  2. Behind a pipe ("|") operator, indicating that the newly calculated
+     values of Registers should be used.
+ Thus evaluation of expressions is defined separately for the two phases,
+ diverging only in the evaluation of Register references.
+   The Expression class yields a method named eval(), parameterized by the
+ phase and returning an object of type BitList.
+   Special care has to be taken about comparison Expressions. In those, bit
+ width does matter, as they are defined upon two bit words of the same length.
+ This condition could not be met by BitLists alone, as they are implicitely
+ infinite and do not carry any information about bit width with them. Thus
+ BitList comes along with comparison methods to be parameterized with the
+ number of bits to care about.
+   When evaluating a top-level Expression the goal is to get a BitList where
+ the lowest w bits (where w is the width of the Expression) contain values
+ equivalent to those found in the generated hardware.
