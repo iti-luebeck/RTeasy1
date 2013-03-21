@@ -1,0 +1,4 @@
+declare register A(7:0), B(7:0)
+BEGIN:
+A <- 1, B <- 2;
+A <- A + B, B <- B - A;

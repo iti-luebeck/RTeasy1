@@ -1,0 +1,83 @@
+<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>5. Simulation Window</title>
+<link href="default.css" rel="stylesheet" type="text/css">
+<style type="text/css">
+.bluetext {
+color: #000000;
+background-color: #00FFFF;
+}
+.yellowtext {
+color: #000000;
+background-color: #FFFF00;
+}
+</style>
+<meta content="DocBook XSL Stylesheets V1.70.1" name="generator">
+<link rel="start" href="index.html" title="RTeasy Help">
+<link rel="up" href="index.html" title="RTeasy Help">
+<link rel="prev" href="ar01s04.html" title="4. Editor Window">
+<link rel="next" href="ar01s06.html" title="6. Memory">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="sect1" lang="en"><div class="titlepage">
+<div>
+<div>
+<h2 class="title" style="clear: both"><a name="simstatus"></a>5. Simulation Window</h2>
+</div></div></div><p>
+		<div class="screenshot"><div class="mediaobject"><img src="pics/SimState.PNG"></div></div>
+	</p><p>
+		The simulation window is only visible during a simulation (<a href="ar01s03.html#simmode" 
+		title="3.1.2. Simulation Mode">Section 3.1.2: Simulation Mode</a>).
+		It displays the information of all declared registers, busses, memories and register arrays
+		and the current state and cycle.
+	</p><p><b>State Panel.&nbsp;</b>
+		<div class="screenshot"><div class="mediaobject"><img src="pics/SimStateHead.PNG"></div></div>
+
+		This panel contains the current state and cycle.
+	</p><p><b>Registers and Busses.&nbsp;</b>
+		<div class="screenshot"><div class="mediaobject"><img src="pics/SimRegBus.PNG"></div></div>
+		This table displays the current entries of all declared components. A change of an entry
+		is highlighted in <span class="yellowtext">yellow</span>.
+		By double-clicking a table cell that displays an entry it becomes editable an a new entry can be entered.
+		To aplly the changes use the enter key. To discard them use the escape key.
+	</p><div class="table"><a name="basetable"></a>
+	<p class="title"><b>Tabelle 3. Base Table</b></p>
+	<div class="table-contents">
+	<table summary="Basisdarstellung" border="1"><colgroup><col><col><col><col></colgroup>
+	<thead><tr><th>Wert</th>
+	<th align="right">Base</th>
+	<th align="center">Characters</th>
+	<th align="center">Description</th></tr></thead>
+	<tbody><tr><td>BIN</td><td align="right">2</td><td align="center">0, 1</td><td>binary output</td></tr>
+	<tr><td>DEC</td><td align="right">10</td><td align="center">0,...,9 </td><td>decimal output - unsigned</td></tr>
+	<tr><td>HEX</td><td align="right">16</td><td align="center">0,..,9,A,...,F</td><td>hexadecimal output - unsigned</td></tr>
+	<tr><td>DEC2</td><td align="right">10</td><td align="center">0,..,9</td><td>decimal output - signed</td></tr>
+	<tr><td>HEX2</td><td align="right">16</td><td align="center">0,...,9,A,...,F</td><td>hexadecimal output - signed</td></tr></tbody></table></div></div>
+	<br class="table-break">
+	<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;">
+	<table border="0" summary="Note"><tr>
+	<td valign="top" align="center" rowspan="2" width="25">
+	<img alt="[Note]" src="pics/icons/note.png"></td>
+	<th align="left"></th></tr><tr><td valign="top" align="left">
+	<p>Entries that are to wide for the corresponding register/bus will be cut to the needed width.</p></td></tr></table></div>
+	<p><b>Memory.&nbsp;</b>
+		<div class="screenshot"><div class="mediaobject"><img src="pics/SimMemory.PNG"></div></div>
+		Each declared memory displays a button that opens the window where the content of the corresponding
+		memory is shown and editable
+		(<a href="ar01s06.html" title="6. Memory">Section 6: Memory</a>).
+	</p>
+	<p><b>Registerarrays.&nbsp;</b>
+	<div class="screenshot"><div class="mediaobject"><img src="pics/SimRegArray.PNG"></div></div>
+	Each declared register array has this button as well to manage ist contents.
+	(<a href="ar01s07.html" title="7. RegArray">Section 7: Registerarrays</a>).</p>
+	</div>
+<br>
+<table border="0" width="100%">
+	<tr><td>
+<a href="ar01s04.html">Previous Page</a></td>
+	<td width="70%">&#160;</td>
+	<td><div align="right">
+<a href="ar01s06.html">Next Page</a>
+	</div></td></tr>
+</table>
+	</body>
+	</html>

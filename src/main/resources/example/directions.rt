@@ -1,0 +1,7 @@
+declare register A(0:7), B(0:7)
+declare register O1(0:7), O2(7:0)
+declare register C(7:0)
+declare bus BUS1(0:7), BUS2(7:0)
+A <- %10101010, B <- %01010101, C <- %10101010;
+if A = C then O1 <- A or B, O2 <- B or A fi, B <- %11110000, C <- %00001111;
+A <- B(0:3).C(3:0);

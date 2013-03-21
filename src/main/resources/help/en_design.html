@@ -1,0 +1,68 @@
+<html>
+<head>
+<title>Help On RTeasy Design Process</title>
+</head>
+<body>
+<h1>Help On RTeasy Design Process</h1>
+<hr>
+<h2><a name="overview"></a>Overview<a></h2>
+<p>
+RTeasy offers tools for using an RTeasy model in the design process.
+Those currently include the
+<a href="#signals">derivation of a possible interface</a>
+between
+control and operation unit, the
+<a href="#mealyfsm">transformation</a>
+of the RTeasy model to a
+model equivalent to a mealy FSM and the
+<a href="#vhdl">export to structural VHDL</a>.
+These tools can be found in the "Design" menu.
+</p>
+
+<h2><a name="signals"></a>Derivation Of A Possible Interface</h2>
+<p>
+Currently all unique RT and memory operations receive their own
+control signal. For the conditional signals all expressions in
+<b>if</b>-statements are treated this way: boolean expressions are
+split up into non-boolean ones. All unique non-boolean expressions
+get their own conditional signal. This is due to the fact that boolean
+expressions are manipulated during the transformation of the RTeasy model
+to a mealy FSM.
+</p>
+
+<h2><a name="mealyfsm"></a>Transformation To Mealy FSM Model</h2>
+<p>
+Several constructs of the RTeasy language need state expansion and other
+transformations to be realizable into a Mealy FSM. To watch the effect of
+those transformations, they could be applied to the model, deriving a model
+that could be directly rewritten into a Mealy FSM state chart.
+</p>
+
+<h2><a name="vhdl"></a>Transformation To Structural VHDL</h2>
+<p>
+This tool transforms the functional description on RT level given by
+the RTeasy model to a structural RT level description in synthesizable
+VHDL. A structural block diagram can be derived using the HDL-to-Graphics
+feature of many design tools such as Mentor Graphics' FPGA Advantage.
+The generated VHDL may be exported via one huge VHDL file. The generated
+code is VHDL-87 and entirely composed using only the synthesizable VHDL
+subset accepted by synthesis tools.
+</p>
+<p>
+On simulation of the VHDL one should connect a clock signal to the CLK
+port of the generated main component. This signal should begin with a
+falling edge which is the triggering edge of the control unit.
+Also the components are not initialized automatically on start-up as it is
+done in RTeasy simulation mode. This is not possible in hardware. Instead
+a RESET port is given which should be driven to '1' at least for one clock
+cycle. Especially internal memories are sensible to the RESET timing. Their
+reset process takes the time from the moment it was triggered until the
+same CLK value occurs again, e.g. when started while CLK='0' it lasts until
+the falling edge of CLK is triggered. This way it is ensured that the
+memory has at least a half-cycle to write '0' to all its cells. Note also
+that memory read and write timing is only a half-cycle which clearly limits
+the clock frequency when using larger internal memories. In future RTeasy
+versions memories might be parameterized by their timing in clock cycles.
+</p>
+</body>
+</html>

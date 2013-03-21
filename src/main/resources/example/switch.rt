@@ -1,0 +1,6 @@
+declare register A (7:0)
+A <- 0;
+START:switch A {case 0 :   A <- A + 1, goto START case 1 :   A <- A + 1, goto START default : nop};
+goto END;
+END: A <- 0, goto START;
+

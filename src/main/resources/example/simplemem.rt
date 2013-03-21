@@ -1,0 +1,24 @@
+% University of Luebeck - RTeasy Version 0.3.4 %
+# simple 64KB memory component
+
+declare in bus ADDR(15:0), DATA_IN(7:0), CE, WE;
+declare out bus DATA_OUT(7:0);
+
+declare register AR(15:0), DR(7:0);
+
+declare memory MEM(AR,DR);
+
+IDLE: AR <- ADDR, DR <- DATA_IN
+ |
+ if CE then
+   if WE then goto WRITE
+   else goto READ
+   fi
+ else
+   goto IDLE
+ fi;
+
+WRITE: write MEM, goto IDLE;
+
+READ: read MEM;
+      DATA_OUT <- DR, goto IDLE;

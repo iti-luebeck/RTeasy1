@@ -1,0 +1,7 @@
+declare register A(7:0), B(7:0)
+declare bus BUS(7:0)
+declare memory MEM(A,B)
+A <- 255, A <- 0;
+BUS <- A(3:0).B(3:0), BUS <- A;
+A <- 0, B <- 1;
+write MEM, read MEM;

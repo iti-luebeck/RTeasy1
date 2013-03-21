@@ -1,0 +1,32 @@
+% University of Luebeck - RTeasy Version 0.3.4 %
+#Registerarray-Example
+declare register IR(7:0), AR(7:0), DR(7:0), PC(7:0), Z
+declare register array R(7:0)[4]
+declare memory MEM(AR,DR)
+INIT:	PC <- 0, AR <- 0;
+FETCH: 	AR <- PC; 
+	PC <- PC + 1, read MEM;
+	IR <- DR | switch IR(7:4){
+	case 0: goto FETCH
+	case 1: goto ADD
+	case 2: goto SHL
+	case 3: goto LOAD
+	case 4: goto STORE
+	case 5: goto JMP
+	case 6: goto BREQ
+	default: goto END};
+ADD: 	R[IR(3:2)] <- R[IR(3:2)] + R[IR(1:0)];
+	if R[IR(3:2)] = 0 then Z <- 1 else Z <- 0 fi, goto FETCH;
+SHL:	R(7:1)[IR(3:2)] <- R(6:0)[IR(3:2)]; R(0)[IR(3:2)] <- 0;
+	if R[IR(3:2)] = 0 then Z <- 1 else Z <- 0 fi, goto FETCH;	
+LOAD:	AR <- R[3];
+	read MEM;
+	R[IR(3:2)] <- DR, goto FETCH;
+STORE: 	AR <- R[3],
+	DR <- R[IR(3:2)];
+	write MEM, goto FETCH;
+JMP: 	read MEM;
+	PC <- DR | goto FETCH; 
+BREQ:   if Z = 1 then goto JMP 
+	else goto FETCH fi;
+END:    nop;

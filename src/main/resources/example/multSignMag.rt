@@ -1,0 +1,23 @@
+component MULTSIGNMAGN;
+
+interface
+  in  INBUS(7:0);
+  out OUTBUS(7:0);
+
+structure
+  declare register	A(0:7), M(0:7), Q(0:7), COUNT(0:2);
+
+behaviour
+
+BEGIN:		A <- 0, COUNT <- 0,
+INPUT:		M <- INBUS;
+		Q <- INBUS;
+ADD:		if Q(7)=1 then A(0:7) <- A(1:7) + M(1:7) 
+                          else A(0:7) <- A(1:7) + 0 fi;
+RIGHTSHIFT:	A(0) <- 0, A(1:7).Q <- A.Q(0:6),
+TEST:		if COUNT <> 6 then COUNT <- COUNT + 1, goto ADD fi;
+		A(0) <- M(0) xor Q(7), Q(7) <- 0;
+OUTPUT:		OUTBUS <- Q;
+		OUTBUS <- A;
+
+end component MULTSIGNMAGN;

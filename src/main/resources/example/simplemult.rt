@@ -1,0 +1,13 @@
+% University of Luebeck - RTeasy Version 0.3.4 %
+# simple shift multiplier
+
+declare in bus RUN, INBUS(15:0);
+declare out bus RDY, OUTBUS(15:0);
+declare register RESULT(15:0), A(15:0), B(7:0);
+
+IDLE:   A(15:8) <- 0, A(7:0).B <- INBUS, RESULT <- 0,
+        if not RUN then goto IDLE fi;
+LOOP:   if B(0) then RESULT <- RESULT + A fi,
+        if B(7:1) <> 0 then B <- B(7:1), A <- A(14:0).A(15), goto LOOP
+        else RDY <- 1 fi;
+FINISH: OUTBUS <- RESULT, goto IDLE;

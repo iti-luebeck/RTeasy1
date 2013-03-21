@@ -1,0 +1,22 @@
+declare register S(0:7), AR(4:0), DR(7:0), CNT_0(7:0), CNT_1(7:0)
+declare memory MEM(AR,DR)
+declare bus ADC(7:0), RADIO(7:0)
+
+INIT:	S <- 187, AR <- 0, CNT_0 <- 240, CNT_1 <- $FF;
+
+LOOP_0:	CNT_1 <- $FF,
+	if CNT_0 <> 0 then CNT_0 <- CNT_0 - 1, goto LOOP_1
+	else goto READ fi;
+
+LOOP_1:	CNT_1 <- CNT_1 - 1;
+	if CNT_1 <> 0 then goto LOOP_1
+	else goto LOOP_0 fi;
+READ:	DR <- ADC, CNT_0 <- 240;
+	write MEM,
+	if AR < 31 then AR <- AR + 1, goto LOOP_0 fi;
+SEND:	RADIO <- S, read MEM;
+
+LOOP_SEND: RADIO <- DR, read MEM;
+	if AR <> 0 then AR <- AR - 1, goto LOOP_SEND fi;
+	RADIO <- DR,
+	goto LOOP_0;

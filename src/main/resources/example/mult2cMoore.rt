@@ -1,0 +1,22 @@
+# 2er-Kompl. Multiplikation fuer Moore-Aut.
+component MULT2CMOORE;
+
+declare in bus INBUS(7:0), BEG;
+declare out bus OUTBUS(7:0), FINISHED;
+declare register	A(7:0), M(7:0), Q(7:0), COUNT(2:0), F;
+
+START:		FINISHED <- 1 | if BEG = 0 then goto START fi; # END
+INPUT:		A<-0, COUNT <- 0, F <- 0, FINISHED <-0,
+		M <- INBUS;                                # c9,c10
+		Q <- INBUS|                                # c8
+                if Q(0) = 0 then goto RSHIFT fi;
+ADD:		A <- A + M, F <- (M(7) and Q(0)) or F;     # c2,c3,c4
+RSHIFT:	        A(7) <- F, A(6:0).Q <- A.Q(7:1), 
+                COUNT <- COUNT + 1|                        # c0,c1,c11
+        	if COUNT <> 7 then 
+                  if Q(0) then goto ADD 
+                          else goto RSHIFT fi 
+                else if Q(0) = 0 then goto OUTPUT fi fi;
+CORRECT:	A <- A - M, Q(0) <- 0;                     # c2,c3,c4,c5
+OUTPUT:		OUTBUS <- Q;                               # c6
+		OUTBUS <- A, goto START;                   # c7

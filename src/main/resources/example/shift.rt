@@ -1,0 +1,5 @@
+% University of Luebeck - RTeasy Version 0.3.4 %
+#Shift-Example
+declare register A(0:7), B(0:7)
+A <- %10101010, B <- %01010101;
+SHIFT: B.A(1:7) <- B(0:6).A, A(0) <- 0;

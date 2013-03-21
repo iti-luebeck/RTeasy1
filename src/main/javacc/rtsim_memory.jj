@@ -1,0 +1,81 @@
+
+options {
+  STATIC=false;
+}
+
+PARSER_BEGIN(MemoryParser)
+
+package de.uniluebeck.iti.rteasy.frontend;
+
+import java.util.LinkedList;
+import de.uniluebeck.iti.rteasy.kernel.MemoryEntry;
+import de.uniluebeck.iti.rteasy.RTSimGlobals;
+
+public class MemoryParser {
+
+  private boolean hasSyntaxError = false;
+  private String syntaxErrorMessage;
+  private int addrWidth = 0;
+  private int dataWidth = 0;
+
+  public void setAddrWidth(int aw) { addrWidth = aw; }
+  public void setDataWidth(int dw) { dataWidth = dw; }
+  public MemoryEntry parse() {
+    MemoryEntry rn = null;
+    try {
+      rn = memoryEntry();
+    }
+    catch (Exception e) {
+      hasSyntaxError = true;
+      syntaxErrorMessage = e.getMessage();
+    }
+    return rn;
+  }
+
+  public boolean hasSyntaxError() {return hasSyntaxError; }
+  public String getSyntaxErrorMessage() { return syntaxErrorMessage; }
+  public void reset() {
+    hasSyntaxError = false;
+    syntaxErrorMessage = "";
+  }
+
+}
+
+PARSER_END(MemoryParser)
+
+SKIP :
+{
+  " " | "\r" | "\t" | "\n" | <"#" (~["\n"])* "\n">
+}
+
+TOKEN :
+{
+  < BIN_NUM: "%" ("0"|"1")+ >
+| < HEX_NUM: "$" (["0"-"9"] | ["A"-"F"])+ >
+| < DEC_NUM: (["0"-"9"])+ >
+| < COLON: ":" >
+| < SEMICOLON: ";" >
+| < COMMA: "," >
+}
+
+MemoryEntry memoryEntry() :
+{ MemoryEntry child = null; boolean[] addr, data; LinkedList entries = new LinkedList();}
+{
+  addr = number(addrWidth) <COLON> 
+  data = number(dataWidth) { entries.add(RTSimGlobals.copiedBoolArray(data)); }
+  ( [<COMMA>] data = number(dataWidth) { entries.add(RTSimGlobals.copiedBoolArray(data)); } )*
+  <SEMICOLON>
+  [ child = memoryEntry() ]
+  { return new MemoryEntry(addr,entries,child); }
+}
+
+boolean[] number(int width) :
+{ Token t; }
+{
+  t = <BIN_NUM> { return RTSimGlobals.string2boolArray(t.image.toString().substring(1),width,RTSimGlobals.BASE_BIN); }
+| t = <HEX_NUM> { return RTSimGlobals.string2boolArray(t.image.toString().substring(1),width,RTSimGlobals.BASE_HEX); }
+| t = <DEC_NUM> { return RTSimGlobals.string2boolArray(t.image.toString(),width,RTSimGlobals.BASE_DEC); }
+}
+
+
+

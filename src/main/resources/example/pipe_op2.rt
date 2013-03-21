@@ -1,0 +1,16 @@
+component PIPE_OP2;
+
+structure
+declare register A(7:0), B(7:0)
+declare bus BUS(7:0)
+
+behaviour
+BEGIN:
+A <- BUS;
+B <- BUS;
+LOOP:
+A <- A + B | if A < 64 then goto BEGIN else goto END fi;
+END:
+BUS <- A;
+
+end component PIPE_OP2;

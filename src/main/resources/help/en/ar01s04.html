@@ -1,0 +1,104 @@
+<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>4. Editor Window</title>
+<link href="default.css" rel="stylesheet" type="text/css">
+<style type="text/css">
+.bluetext {
+color: #000000;
+background-color: #00FFFF;
+}
+
+.yellowtext {
+color: #000000;
+background-color: #FFFF00;
+}
+.greentext {
+color: #000000;
+background-color: #00FF00;
+}
+.redtext {
+color: #000000;
+background-color: #FF0000;
+}
+.orangetext {
+color: #000000;
+background-color: #FFA500;
+}
+</style>
+<meta content="DocBook XSL Stylesheets V1.70.1" name="generator">
+<link rel="start" href="index.html" title="RTeasy Help">
+<link rel="up" href="index.html" title="RTeasy Help">
+<link rel="prev" href="ar01s03.html" title="3. Main Window">
+<link rel="next" href="ar01s05.html" title="5. Simulation Window">
+</head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="sect1" lang="en"><div class="titlepage">
+<div><div><h2 class="title" style="clear: both">
+<a name="editor"></a>4. Editor Window</h2></div></div></div><p>
+		<div class="screenshot"><div class="mediaobject"><img src="pics/mainWindowNew.JPG" width=500 height=400></div></div>
+	</p><p>
+		The editor shows the source code of the current project. In the edit mode 
+		(<a href="ar01s03.html#editmode" title="3.1.1. Edit Mode">Section 3.1.1: Edit Mode</a>) 
+		you can process on the code. The simulation mode (<a href="ar01s03.html#simmode" 
+		title="3.1.2. Simulation MOde">Section 3.1.2: Simulation Mode</a>) shows the current
+		simulation state in the editor window. Note that the simulation mode disables any
+		processing in the editor.
+	</p><div class="sect2" lang="en"><div class="titlepage"><div><div>
+	<h3 class="title"><a name="N1027D"></a>4.1. In the Edit Mode</h3></div></div></div><p>
+			The editor provides all common functions.
+		</p><p><b>Mark, Cut, Copy and Paste.&nbsp;</b>
+			These functions are available as usual. The following table shows the shortcuts.
+		</p><h2>Key Assignments</h2>
+<table border=1>
+<tr><th>Key(s)</th><th>Function</th></tr>
+<tr><td>Arrow Keys</td><td>cursor movement</td></tr>
+<tr><td>Ctrl + Arrow Keys Left and Right</td><td>cursor movement by words</td>
+<tr><td>&lt;-- Backspace</td><td>delete character before cursor</td></tr>
+<tr><td>Del</td><td>delete character under cursor</td></tr>
+<tr><td>Pos 1</td><td>move cursor to front of row</td></tr>
+<tr><td>End</td><td>move cursor to end of row</td></tr>
+<tr><td>Ctrl+Pos 1</td><td>jump to beginning of listing</td></tr>
+<tr><td>Ctrl+End</td><td>jump to end of listing</td></tr>
+<tr><td>PgUp/PgDn</td><td>scroll by screen pages</td></tr>
+<tr><td>Tab</td><td>emit tabulator spacing</td></tr>
+<tr><td>Shift + Movement Keys</td><td>mark mode</td></tr>
+<tr><td>Ctrl+A</td><td>mark all</td></tr>
+<tr><td>Ctrl+C</td><td>copy marked region</td></tr>
+<tr><td>Ctrl+X</td><td>cut marked region</td></tr>
+<tr><td>Ctrl+V</td><td>insert from clipboard</td></tr>
+</table><p>
+<p>
+The editor is implemented using the Java class JTextArea. Key assignments are listed 
+<a href="http://java.sun.com/j2se/1.4.2/docs/api/javax/swing/doc-files/Key-Metal.html#JTextArea">here</a>.
+
+		</p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title">
+		<a name="N102E4"></a>4.2. In the Simulation Mode</h3></div></div></div><p><a name="colormarker"></a>
+		
+			During a simulation the current executed statements are highlighted.
+		</p><div class="table"><a name="N102EA"></a><p class="title"><b>Tabelle 2. Color marks</b></p>
+		<div class="table-contents"><table summary="Color marks" border="1">
+		<colgroup><col><col></colgroup><thead><tr><th>Color</th>
+		<th>Description</th></tr></thead><tbody><tr><td><span class="bluetext">Block</span></td>
+		<td>current executed cycle (Step)</td></tr>
+		<tr><td><span class="yellowtext">Statement</span></td>
+		<td>current executed statement (Microstep) </td></tr>
+		<tr><td><span class="greentext">Comparison</span></td>
+		<td> the comparison provides to be true (Microstep)</td>
+		<tr><td><span class="redtext">Comparison</span></td>
+		<td> the comparison provides to be false (Microstep)</td>
+		<tr><td><span class="bluetext">Block</span></td>
+		<td>the cycle where the simulation is interrupted (Run) </td></tr>
+		<tr><td><span class="orangetext">Block</span></td>
+		<td>current reached breakpoint</td></tr></tbody></table></div>
+		</div><br class="table-break">
+		</div>
+		</div>
+<br>
+<table border="0" width="100%">
+	<tr><td>
+<a href="ar01s03.html">Previous Page</a></td>
+	<td width="70%">&#160;</td>
+	<td><div align="right">
+<a href="ar01s05.html">Next Page</a>
+	</div></td></tr>
+</table>
+		</body>
+		</html>

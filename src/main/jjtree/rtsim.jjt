@@ -1,0 +1,459 @@
+
+options {
+  MULTI=true;
+  VISITOR=true;
+  NODE_SCOPE_HOOK=true;
+  STATIC=false;
+}
+
+PARSER_BEGIN(RTSim_Parser)
+
+package de.uniluebeck.iti.rteasy.frontend;
+
+import java.io.*;
+import de.uniluebeck.iti.rteasy.*;
+import de.uniluebeck.iti.rteasy.kernel.*;
+
+public class RTSim_Parser {
+
+  private boolean hasSyntaxError = false;
+  private String syntaxErrorMessage;
+  
+  public ASTRtProg parseRTProgram() {
+    ASTRtProg rn = null;
+    try {
+      rn = rt_program();
+    }
+    catch (Exception e) {
+      hasSyntaxError = true;
+      syntaxErrorMessage = e.getMessage();
+    }
+    return rn;
+  }
+
+  public boolean hasSyntaxError() {return hasSyntaxError; }
+  public String getSyntaxErrorMessage() { return syntaxErrorMessage; }
+  public void reset() {
+    hasSyntaxError = false;
+    syntaxErrorMessage = "";
+  }
+
+  void jjtreeOpenNodeScope(Node n) {
+    ((RTSimNode) n).setFirstToken(getToken(1));
+  }
+
+  void jjtreeCloseNodeScope(Node n) {
+    ((RTSimNode) n).setLastToken(getToken(0));
+  }
+
+
+}
+
+PARSER_END(RTSim_Parser)
+
+SKIP :
+{
+  " " | "\r" | "\t" | "\n"  
+}
+//< "#" (~ ["\n"])* "\n" >
+
+SPECIAL_TOKEN : {
+< SINGLE_LINE_COMMENT: "#"(~["\n","\r"])* ("\n"|"\r"|"\r\n")? > }
+
+// new policy toward tokens: no entry in token list, instead use of
+// "string" notation in productions
+
+TOKEN :
+{
+  < BIN_NUM: "%" ("0"|"1")+ >
+| < HEX_NUM: "$" (["0"-"9"] | ["A"-"F"])+ >
+| < DEC_NUM: (["0"-"9"])+ >
+| < LPAREN: "(" >
+| < RPAREN: ")" >
+| < LBRACKET: "[" >
+| < RBRACKET: "]" >
+| < LBRACE : "{" >
+| < RBRACE : "}" >
+| < COMMA: "," >
+| < SEMICOLON: ";" >
+| < COLON: ":" >
+| < DOT: "." >
+| < PIPE: "|" >
+| < ASSIGN: "<-" >
+| < LE: "<=" >
+| < GE: ">=" >
+| < NE: "<>" >
+| < PLUS: "+" >
+| < MINUS: "-" >
+| < LT: "<" >
+| < GT: ">" >
+| < EQ: "=" >
+| < AND: "and" >
+| < OR: "or" >
+| < NOR: "nor" >
+| < XOR: "xor" >
+| < NAND: "nand" >
+| < IF: "if" >
+| < THEN: "then" >
+| < ELSE: "else" >
+| < FI: "fi" >
+| < SWITCH: "switch" >
+| < CASE: "case" >
+| < CASEDEFAULT: "default" >
+| < DECLARE: "declare" >
+| < REGISTER: "register" >
+| < BUS: "bus" >
+| < MEMORY: "memory" >
+| < ARRAY: "array" >
+| < READ: "read" >
+| < WRITE: "write" >
+| < GOTO: "goto" >
+| < GO: "go" >
+| < TO: "to" >
+| < NOT: "not" >
+| < NOP: "nop" >
+| < ID: ["A"-"Z"] (["A"-"Z"] | ["0"-"9"] | "_")* >
+}
+
+ASTRtProg rt_program() #RtProg :
+{ Token t;}
+{
+  ["component" t = <ID> {jjtThis.setName(t.image.toString());} ";"]
+  declarations()
+  statement_sequence()
+  <EOF>
+  { return jjtThis; }
+}
+
+/*
+void interfaceList() #InterfaceList :
+{}
+{
+  ("in" { jjtThis.setSignalDirection(RTSimGlobals.DIR_IN); }
+  |"out" { jjtThis.setSignalDirection(RTSimGlobals.DIR_OUT); })
+  reg_bus_decl_list() ";"
+  [interfaceList() {jjtThis.setHasNext(true);} ]
+}
+*/
+
+void declarations() #Decls :
+{}
+{
+  declaration() [";"] [declarations() {jjtThis.setHasNext(true);}]
+}
+
+void declaration() #Decl:
+{ int dir; }
+{
+  <DECLARE> 
+  ( <REGISTER>
+  	( reg_bus_decl_list() {jjtThis.setDeclType(RTSimGlobals.REGISTER);}
+  	| <ARRAY> regarray_decl_list() {jjtThis.setDeclType(RTSimGlobals.ARRAY);}
+  	)
+  
+  | dir = bus_decl() {jjtThis.setDeclType(RTSimGlobals.BUS);
+                      jjtThis.setSignalDirection(dir); }
+  | memory_decl() {jjtThis.setDeclType(RTSimGlobals.MEMORY);}
+  )
+}
+
+//void register_decl() #void :
+//{}
+//{
+//  <REGISTER> reg_bus_decl_list()
+//}
+
+int bus_decl() #void :
+{ int back = RTSimGlobals.UNUSED; }
+{
+  [ "in"  {back = RTSimGlobals.DIR_IN;}
+  | "out" {back = RTSimGlobals.DIR_OUT;} ]
+ <BUS> reg_bus_decl_list()
+  { return back; }
+}
+
+void memory_decl() #void :
+{}
+{
+  <MEMORY> mem_decl_list()
+}
+
+//void regarray_decl() #void :
+//{}
+//{
+//	<ARRAY> regarray_decl_list()
+//}
+
+void reg_bus_decl_list() #RegBusDeclList :
+{}
+{
+  reg_bus_decl() [<COMMA> reg_bus_decl_list() {jjtThis.setHasNext(true);}]
+}
+
+void reg_bus_decl() #RegBusDecl :
+{ Token t; BitRange br; }
+{
+  t = <ID> {jjtThis.setName(t.image.toString());}
+  [br = bit_range() {jjtThis.setBitRange(br);}]
+}
+
+void mem_decl_list() #MemDeclList :
+{}
+{
+  mem_decl() [<COMMA> mem_decl_list() {jjtThis.setHasNext(true);}]
+}
+
+void mem_decl() #MemDecl:
+{ Token t;}
+{
+  t = <ID> {jjtThis.setName(t.image.toString());}
+  <LPAREN>
+  t = <ID> {jjtThis.setAddrReg(t.image.toString());}
+  <COMMA>
+  t = <ID> {jjtThis.setDataReg(t.image.toString());}
+  <RPAREN>
+}
+
+void regarray_decl_list() #RegArrayDeclList :
+{}
+{
+  regar_decl() [<COMMA> regarray_decl_list() {jjtThis.setHasNext(true);}]
+}
+
+void regar_decl() #RegArrayDecl:
+{Token t; BitRange br;}
+{
+  t = <ID> {jjtThis.setName(t.image.toString());}
+  [br = bit_range() {jjtThis.setBitRange(br);}]
+  <LBRACKET>
+  t = <DEC_NUM>  {jjtThis.setNumberOfRegisters(Integer.parseInt(t.image.toString()));}
+  <RBRACKET>
+}
+
+BitRange bit_range() #void:
+{ Token t1,t2;}
+{
+  ("(")
+  (t1 = <DEC_NUM> {t2=t1;})
+  [":" t2 = <DEC_NUM>] (")")
+  { return new BitRange(Integer.parseInt(t1.image.toString()),Integer.parseInt(t2.image.toString())); }
+}
+
+int register_number() #void:
+{Token t;}
+{
+  (t = <DEC_NUM>)
+  {return Integer.parseInt(t.image.toString());}
+}
+
+void statement_sequence() #Stat_Seq :
+{}
+{
+  outer_parallel_statements()
+  [<PIPE> outer_parallel_statements() {jjtThis.setHas2Edges(true);} ]
+  ";"
+  [statement_sequence() {jjtThis.setHasNext(true);}]
+}
+
+void outer_parallel_statements() #Outer_ParStats :
+{ String lname = null; }
+{
+  [LOOKAHEAD(2) lname = label() {jjtThis.setLabelId(lname);}]
+  (statement() {jjtThis.setStatNodeType(RTSimGlobals.STAT);}
+  | if_statement() {jjtThis.setStatNodeType(RTSimGlobals.IFSTAT);}
+  | switch_case_statement() {jjtThis.setStatNodeType(RTSimGlobals.SWITCH); }
+  )
+  ["," outer_parallel_statements() {jjtThis.setHasNext(true);}]
+}
+
+void if_statement() #If_Stat:
+{}
+{
+  <IF> expression() <THEN> inner_parallel_statements()
+  [ <ELSE> inner_parallel_statements() {jjtThis.setHasElse(true);}]
+  <FI>
+}
+
+void switch_case_statement() #Switch_Case_Stat:
+{Token t;}
+{
+	<SWITCH>
+	(bit_sequence())
+	//t = <ID> {jjtThis.setSwitch(t.image.toString());}
+	//[br = bit_range() {jjtThis.setBitRange(br);}]
+	<LBRACE>
+	caselist()
+	[defaultcase() {jjtThis.setDef(true);}]
+	<RBRACE>
+}
+
+void caselist() #CaseList:
+{Token t;}
+{
+	<CASE>
+	num_constant()
+	//((t = <DEC_NUM> {jjtThis.setType(RTSimGlobals.BASE_DEC);}
+	//| t = <HEX_NUM> {jjtThis.setType(RTSimGlobals.BASE_HEX);}
+	//| t = <BIN_NUM> {jjtThis.setType(RTSimGlobals.BASE_BIN);})
+	//{jjtThis.setComparator(t.image.toString());})
+	<COLON>
+	inner_parallel_statements()
+	[caselist() {jjtThis.setHasNext(true);}]
+	
+}
+
+void defaultcase() #CaseList:
+{}
+{
+	{jjtThis.setHasNext(true);}
+	<CASEDEFAULT> {jjtThis.hasDefault(true);}
+	<COLON> {jjtThis.setComparator(null);}
+	inner_parallel_statements()
+}
+
+void inner_parallel_statements() #Inner_ParStats :
+{}
+{
+  ( statement() {jjtThis.setStatNodeType(RTSimGlobals.STAT); }
+  | if_statement() {jjtThis.setStatNodeType(RTSimGlobals.IFSTAT); }
+  )
+  ["," inner_parallel_statements() {jjtThis.setHasNext(true);} ]
+}
+
+String label() #void :
+{ Token t;}
+{
+  t= <ID> <COLON> { return t.image.toString(); }
+}
+
+void expression() #void :
+{}
+{
+  (expression_and() [
+  (<OR>  {jjtThis.setOp(RTSimGlobals.OR);}
+  |<XOR> {jjtThis.setOp(RTSimGlobals.XOR);}
+  |<NOR> {jjtThis.setOp(RTSimGlobals.NOR);}
+  ) expression()])
+  #Expr(>1)
+}
+
+void expression_and() #void :
+{}
+{
+  (expression_not() [
+  (<AND>  {jjtThis.setOp(RTSimGlobals.AND);}
+  |<NAND> {jjtThis.setOp(RTSimGlobals.NAND);}
+  ) expression_and()])
+  #Expr(>1)
+}
+
+void expression_not() #void :
+{ boolean not=false; }
+{
+  (<NOT> {not=true; jjtThis.setOp(RTSimGlobals.NOT);} expression_not()
+  | expression_cmpu() )
+  #Expr(not)
+}
+
+void expression_cmpu() #void :
+{}
+{
+  (expression_cmpo() [
+  (<EQ> {jjtThis.setOp(RTSimGlobals.EQ);}
+  |<NE> {jjtThis.setOp(RTSimGlobals.NE);}
+  ) expression_cmpo()])
+  #Expr(>1)
+}
+
+void expression_cmpo() #void :
+{}
+{
+  (expression_plus() [
+  (<LT> {jjtThis.setOp(RTSimGlobals.LT);}
+  |<LE> {jjtThis.setOp(RTSimGlobals.LE);}
+  |<GT> {jjtThis.setOp(RTSimGlobals.GT);}
+  |<GE> {jjtThis.setOp(RTSimGlobals.GE);}
+  ) expression_plus()])
+  #Expr(>1)
+}
+
+void expression_plus() #void :
+{}
+{
+  (expression_sign() [
+  (<PLUS> {jjtThis.setOp(RTSimGlobals.PLUS);}
+  |<MINUS> {jjtThis.setOp(RTSimGlobals.MINUS);}
+  ) expression_plus()])
+  #Expr(>1)
+}
+
+void expression_sign() #void :
+{ boolean sign=false;}
+{
+  (<MINUS> {sign = true; jjtThis.setOp(RTSimGlobals.SIGN);} expression_sign()
+  | expression_leaf1())
+  #Expr(sign)
+}
+
+void expression_leaf1() #void :
+{}
+{ <LPAREN> expression() <RPAREN>
+| expression_leaf2()
+}
+
+void expression_leaf2() #Expr :
+{}
+{
+  num_constant() {jjtThis.setOp(RTSimGlobals.NUM_CONST);}
+| bit_sequence() {jjtThis.setOp(RTSimGlobals.BIT_SEQ);}
+}
+
+void num_constant() #Num_Const :
+{ Token t;}
+{
+  t = <DEC_NUM> {jjtThis.setValDec(t);}
+| t = <BIN_NUM> {jjtThis.setValBin(t);}
+| t = <HEX_NUM> {jjtThis.setValHex(t);}
+}
+
+void bit_sequence() #Bit_Seq :
+{ Token t; BitRange br = null; int regnum; }
+{
+  t = <ID> {jjtThis.setTargetId(t.image.toString()); }
+  [br = bit_range() {jjtThis.setBitRange(br);} ]
+  [<DOT> bit_sequence() {jjtThis.setHasNext(true);}
+	| <LBRACKET> (bit_sequence() <RBRACKET> {jjtThis.setHasReferenceRegister(true);}
+  	|  regnum = register_number()<RBRACKET>{jjtThis.setRegisterNumber(regnum);
+  	jjtThis.setHasReferenceRegister(false);})
+  	]
+}
+
+//void bit_sequence_reg_array() #Bit_Seq:
+//{ Token t; BitRange br = null; int regnum;}
+//{
+    //t = <ID> {jjtThis.setTargetId(t.image.toString());}
+    //[br = bit_range(){jjtThis.setBitRange(br);}]
+  	//[<LBRACKET> bit_sequence() <RBRACKET> {jjtThis.setHasReferenceRegister(true);}
+  	//|<LBRACKET> regnum = register_number()<RBRACKET>{jjtThis.setRegisterNumber(regnum);
+  	//jjtThis.setHasReferenceRegister(false);}]	    	  
+//}
+
+void statement() #Stat :
+{ Token t; }
+{
+  bit_sequence() <ASSIGN> expression()
+  { jjtThis.setStatementType(RTSimGlobals.ASSIGN); }
+| <READ> t = <ID>
+  { jjtThis.setStatementType(RTSimGlobals.READ);
+    jjtThis.setIdStr(t.image.toString()); }
+| <WRITE> t = <ID>
+  { jjtThis.setStatementType(RTSimGlobals.WRITE);
+    jjtThis.setIdStr(t.image.toString());}
+| (<GOTO>|<GO><TO>) (t = <ID> {jjtThis.setIdStr(t.image.toString());}
+                    | "end" {jjtThis.setGotoEnd();})
+  { jjtThis.setStatementType(RTSimGlobals.GOTO); }
+| <NOP>
+  { jjtThis.setStatementType(RTSimGlobals.NOP); }
+}
+
+

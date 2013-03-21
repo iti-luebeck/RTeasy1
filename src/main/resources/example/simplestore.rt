@@ -1,0 +1,15 @@
+component SIMPLESTORE;
+
+interface
+  in  DATA_IN(7:0), WRITE, READ;
+  out DATA_OUT(7:0);
+
+structure
+  declare register DATA(7:0);
+
+behaviour
+LOOP:    if WRITE then DATA <- DATA_IN fi,
+         if READ  then DATA_OUT <- DATA fi,
+         goto LOOP;
+
+end component SIMPLESTORE;

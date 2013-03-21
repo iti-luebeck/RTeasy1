@@ -1,0 +1,19 @@
+# declarations
+declare register A(0:7), B(0:7), C(0:7)
+declare register AR(0:15), DR(0:7)
+declare bus INBUS(0:7), OUTBUS(0:7)
+declare memory MEM(AR,DR)
+
+# program
+BEGIN:	A <- INBUS, B <- 0, C <- 0;
+	OUTBUS <- B.C;
+	AR <- INBUS;
+	B <- 257;
+	C <- 259 - 10;
+LOOP:	A <- INBUS;
+	if A = 0 then goto ENDLOOP
+        else B <- B+1, C <- C+A, goto LOOP fi;
+ENDLOOP:OUTBUS <- B;
+	OUTBUS <- C;
+
+	

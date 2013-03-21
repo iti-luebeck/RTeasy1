@@ -1,0 +1,24 @@
+component MULT2CINTRO;
+
+interface
+  in  INBUS(7:0);
+  out OUTBUS(7:0);
+
+structure
+  declare register A(7:0), M(7:0), Q(7:0), COUNT(2:0), F;
+
+behaviour
+
+BEGIN:	A <- 0, COUNT <- 0, F <- 0,
+INPUT:	M <- INBUS;
+	Q <- INBUS;
+ADD:	if Q(0) then A <- A + M,
+	F <- M(7) and Q(0) or F fi;
+RSHIFT:	A(7) <- F, A(6:0).Q <- A.Q(7:1),
+        COUNT <- COUNT + 1;
+TEST:	if COUNT <>7 then goto ADD else
+	if Q(0) then A <- A - M, Q(0) <- 0 fi fi;
+OUTPUT:	OUTBUS <- Q;
+	OUTBUS <- A;
+
+end component MULT2CINTRO;

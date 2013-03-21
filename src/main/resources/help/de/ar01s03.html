@@ -1,0 +1,573 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <title>3. Hauptfenster</title>
+  <link href="default.css" rel="stylesheet" type="text/css">
+  <link rel="start" href="index.html" title="RTeasy Hilfe">
+  <link rel="up" href="index.html" title="RTeasy Hilfe">
+  <link rel="prev" href="ar01s02.html" title="2. RTeasy starten">
+  <link rel="next" href="ar01s04.html" title="4. Editorfenster">
+</head>
+
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084"
+alink="#0000FF">
+
+<div class="sect1" lang="de">
+
+<div class="titlepage">
+
+<div>
+
+<div>
+<h2 class="title" style="clear: both"><a name="mainwindow"></a>3.
+Hauptfenster</h2>
+</div>
+</div>
+</div>
+
+<div class="screenshot">
+
+<div class="mediaobject">
+<img src="pics/hauptfenster.jpg"></div>
+</div>
+
+<p>Das Hauptfenster ist der "Desktop" f&uuml;r die anderen RTeasyfenster. Alle
+Fenster k&ouml;nnen innerhalb dieser Arbeitsfl&auml;che beliebig platziert werden. In
+der Men&uuml;leiste befinden sich die Men&uuml;punkte </p>
+
+<table summary="Simple list" border="0" class="simplelist">
+  <tbody>
+    <tr>
+      <td><img alt="" src="pics/icons/guimenu.gif" height="20"
+        width="20"><span class="guimenu">Datei</span> (<a
+        href="ar01s03.html#filemenu" title="3.1.1.1. Dateimen&uuml;">Abschnitt
+        3.1.1.1: Dateimen&uuml;</a>)</td>
+    </tr>
+    <tr>
+      <td><img alt="" src="pics/icons/guimenu.gif" height="20"
+        width="20"><span class="guimenu">Bearbeiten</span> (<a
+        href="ar01s03.html#editmenu"
+        title="3.1.1.2. Bearbeiten-Men&uuml;">Abschnitt 3.1.1.2:
+        Bearbeiten-Men&uuml;</a>)</td>
+    </tr>
+    <tr>
+      <td><img alt="" src="pics/icons/guimenu.gif" height="20"
+        width="20"><span class="guimenu">Simulator</span> (<a
+        href="ar01s03.html#simmenu" title="3.1.2.2. Simulator-Men&uuml;">Abschnitt
+        3.1.2.2: Simulator-Men&uuml;</a>)</td>
+    </tr>
+    <tr>
+      <td><img alt="" src="pics/icons/guimenu.gif" height="20"
+        width="20"><span class="guimenu">Entwurf</span> (<a
+        href="ar01s03.html#designmenu" title="3.1.3. Entwurf">Abschnitt
+        3.1.3.: Entwurf</a>)</td>
+    </tr>
+    <tr>
+      <td><img alt="" src="pics/icons/guimenu.gif" height="20"
+        width="20"><span class="guimenu">Hilfe</span> (<a
+        href="ar01s03.html#helpmenu" title="3.1.4. Hilfe-Men&uuml;">Abschnitt
+        3.1.4: Hilfemen&uuml;</a>)</td>
+    </tr>
+  </tbody>
+</table>
+Je nachdem ob sie sich im Editier- (<a href="ar01s03.html#editmode"
+title="3.1.1. Editiermodus">Abschnitt 3.1.1: Editiermodus</a>) oder
+Simulationsmodus(<a href="ar01s03.html#simmode"
+title="3.1.2. Simulationsmodus">Abschnitt 3.1.2: Simulationsmodus</a>)
+befinden, sind unterschiedliche Punkte in den Men&uuml;s aktiv. 
+
+<p>Darunter befindet sich die Leiste f&uuml;r die Simulationskontrolle (<a
+href="ar01s03.html#simcontrol" title="3.1.2.1. Simulatorsteuerung">Abschnitt
+3.1.2.1: Simulatorsteuerung</a>). Im Editiermodus sind alle Schaltfl&auml;chen
+inaktiv bis auf die Schaltfl&auml;che <img alt="" src="pics/icons/guibutton.gif"
+height="20" width="30"><span class="guibutton">Simulieren</span>. </p>
+
+<div class="sect2" lang="de">
+
+<div class="titlepage">
+
+<div>
+
+<div>
+<h3 class="title"><a name="modi"></a>3.1. Editor-/Simulatormodus</h3>
+</div>
+</div>
+</div>
+
+<p>RTeasy kann sich in zwei unterschiedlichen Zust&auml;nden befinden. Im <span
+class="emphasis"><em>Editiermodus</em></span> (<a
+href="ar01s03.html#editmode" title="3.1.1. Editiermodus">Abschnitt 3.1.1:
+Editiermodus</a>) k&ouml;nnen Sie ein RTeasy-Programm bearbeiten und ver&auml;ndern.
+Au&szlig;erdem k&ouml;nnen Sie sich in diesem Modus die &Uuml;bersetzung in VHDL anzeigen
+lassen. Im <span class="emphasis"><em>Simulationsmodus</em></span> (<a
+href="ar01s03.html#simmode" title="3.1.2. Simulationsmodus">Abschnitt 3.1.2:
+Simulationsmodus</a>) k&ouml;nnen Sie das Programm ausf&uuml;hren und sich die
+Register-, Bus- und Speicherinhalte anzeigen lassen. In diesem Modus k&ouml;nnen
+sie das Programm nicht ver&auml;ndern. </p>
+
+<div class="sect3" lang="de">
+
+<div class="titlepage">
+
+<div>
+
+<div>
+<h4 class="title"><a name="editmode"></a>3.1.1. Editiermodus</h4>
+</div>
+</div>
+</div>
+
+<p>Sie befinden sich standardm&auml;&szlig;ig in diesem Modus, wenn eine Datei geladen
+wird oder ein neues Programm erzeugt wird. Befindet sich RTeasy im
+Simulationsmodus, k&ouml;nnen Sie die Schaltfl&auml;che <img alt=""
+src="pics/icons/guibutton.gif" height="20" width="30"><span
+class="guibutton">Bearbeiten</span> benutzen, um in den Editiermodus zu
+gelangen. </p>
+
+<div class="screenshot">
+
+<div class="mediaobject">
+<img src="pics/BearbeitenBtn.jpg"></div>
+</div>
+
+<div class="sect4" lang="de">
+
+<div class="titlepage">
+
+<div>
+
+<div>
+<h5 class="title"><a name="filemenu"></a>3.1.1.1. Dateimen&uuml;</h5>
+</div>
+</div>
+</div>
+
+<p></p>
+
+<div class="screenshot">
+
+<div class="mediaobject">
+<img src="pics/dateimenue.jpg"></div>
+</div>
+
+<p></p>
+
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;">
+
+<table border="0" summary="Note">
+  <tbody>
+    <tr>
+      <td valign="top" align="center" rowspan="2" width="25"><img
+        alt="[Anmerkung]" src="pics/icons/note.png"></td>
+      <th align="left"></th>
+    </tr>
+    <tr>
+      <td valign="top" align="left"><p>Diese Men&uuml;punkte beenden den
+        Simulationsmodus und wechseln in den Editiermodus. </p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<p><b><img alt="" src="pics/icons/guimenuitem.gif" height="25"
+width="20"><span class="guimenuitem">Neu</span> . </b>Schlie&szlig;t das aktuelle
+RTeasy-Programm und &ouml;ffnet ein neues, leeres RT-Programm im Editorfenster (<a
+href="ar01s04.html" title="4. Editorfenster">Abschnitt 4:
+Editorfenster</a>).</p>
+
+<p><b><img alt="" src="pics/icons/guimenuitem.gif" height="25"
+width="20"><span class="guimenuitem">&Ouml;ffnen<span class="accel">(F3)</span>
+</span> . </b> L&auml;dt ein Rteasy-Programm aus einer Datei in den Editor (<a
+href="ar01s04.html" title="4. Editorfenster">Abschnitt 4: Editorfenster</a>).
+</p>
+
+<p><b><img alt="" src="pics/icons/guimenuitem.gif" height="25"
+width="20"><span class="guimenuitem">Speichern<span
+class="accel">(F2)</span></span> . </b> Speichert das Programm an den Ort,
+der in der Kopfzeile des Editorfensters angezeigt wird. Sollte die Datei noch
+nie abbespeichert worden sein, &ouml;ffnet sich ein Dialog, in dem Sie ausw&auml;hlen
+k&ouml;nnen an welchen Ort die Datei gespeichert werden soll. </p>
+
+<p><b><img alt="" src="pics/icons/guimenuitem.gif" height="25"
+width="20"><span class="guimenuitem">Speichern als<span
+class="accel">(STRG+F2)</span></span> . </b> Speichert das Programm an den im
+Dialog ausgew&auml;hlten Ort. </p>
+
+<p><b><img alt="" src="pics/icons/guimenuitem.gif" height="25"
+width="20"><span class="guimenuitem">Beenden</span> . </b> Beendet RTeasy.
+</p>
+</div>
+
+<div class="sect4" lang="de">
+
+<div class="titlepage">
+
+<div>
+
+<div>
+<h5 class="title"><a name="editmenu"></a>3.1.1.2. Bearbeiten-Men&uuml;</h5>
+</div>
+</div>
+</div>
+
+<p></p>
+
+<div class="screenshot">
+
+<div class="mediaobject">
+<img src="pics/EditMenue.JPG"></div>
+</div>
+
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;">
+
+<table border="0" summary="Note">
+  <tbody>
+    <tr>
+      <td valign="top" align="center" rowspan="2" width="25"><img
+        alt="[Anmerkung]" src="pics/icons/note.png"></td>
+      <th align="left"></th>
+    </tr>
+    <tr>
+      <td valign="top" align="left"><p>Diese Men&uuml;punkte sind nur im
+        Editiermodus aktiv. </p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<p><b><img alt="" src="pics/icons/guimenuitem.gif" height="25"
+width="20"><span class="guimenuitem">R&uuml;ckg&auml;ngig<span
+class="accel">(STRG+Z)</span></span> . </b> Macht die letzte &Auml;nderung 
+r&uuml;ckg&auml;ngig. </p>
+
+<p><b><img alt="" src="pics/icons/guimenuitem.gif" height="25"
+width="20"><span class="guimenuitem">Kopieren<span
+class="accel">(STRG+C)</span></span> . </b> Kopiert den im Editor markierten
+Text in die Zwischenablage. </p>
+
+<p><b><img alt="" src="pics/icons/guimenuitem.gif" height="25"
+width="20"><span class="guimenuitem">Ausschneiden<span
+class="accel">(STRG+X)</span></span> . </b> Entfernt den im Editor markierten
+Text und kopiert ihn in die Zwischenablage. </p>
+
+<p><b><img alt="" src="pics/icons/guimenuitem.gif" height="25"
+width="20"><span class="guimenuitem">Einf&uuml;gen<span
+class="accel">(STRG+V)</span></span> . </b> F&uuml;gt den Inhalt der
+Zwischenablage an die aktuelle Cursorposition im Editorfenster ein. </p>
+
+<p><b><img alt="" src="pics/icons/guimenuitem.gif" height="25"
+width="20"><span class="guimenuitem">Pretty Print</span> . </b> Dieser
+Men&uuml;punkt versucht das Programm zu kompilieren. Ist dies erfolgreich, dann
+wird das Programm in eine einheitliche und &uuml;bersichliche Struktur gebracht.
+Warnungen werden soweit wie m&ouml;glich behoben. Die auftretenden Fehler und
+Warnungen erscheinen im Logfenster (<a href="ar01s09.html"
+title="8. Das Logfenster">Abschnitt 9: Das Logfenster</a>). </p>
+
+<p><a name="settings"></a><b><img alt="" src="pics/icons/guimenuitem.gif"
+height="25" width="20"><span class="guimenuitem">Einstellungen</span> . </b>
+Hier k&ouml;nnen sie das Verhalten und Aussehen von RTeasy anpassen. </p>
+
+<table summary="Simple list" border="0" class="simplelist">
+  <tbody>
+    <tr>
+      <td><img alt="" src="pics/icons/guilabel.gif" height="20"
+        width="20"><span class="guilabel">Language / Sprache:</span> - Hier
+        k&ouml;nnen Sie die Sprache f&uuml;r Schaltfl&auml;chenbeschriftungen,
+        Fehlermeldungen usw. festlegen </td>
+    </tr>
+    <tr>
+      <td><img alt="" src="pics/icons/guilabel.gif" height="20"
+        width="20"><span class="guilabel">Plug &amp; Feel</span> - Legt das
+        Aussehen der RTeasyfenster fest. </td>
+    </tr>
+    <tr>
+      <td><img alt="" src="pics/icons/guilabel.gif" height="20"
+        width="20"><span class="guilabel">Ausf&uuml;hrliche Warnungen</span> - 
+        Warnungen werden mit ausgegeben. </td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;">
+
+<table border="0" summary="Note">
+  <tbody>
+    <tr>
+      <td valign="top" align="center" rowspan="2" width="25"><img
+        alt="[Anmerkung]" src="pics/icons/note.png"></td>
+      <th align="left"></th>
+    </tr>
+    <tr>
+      <td valign="top" align="left"><p>Dieser Men&uuml;punkt ist immer aktiv. </p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+
+<div class="sect3" lang="de">
+
+<div class="titlepage">
+
+<div>
+
+<div>
+<h4 class="title"><a name="simmode"></a>3.1.2. Simulationsmodus</h4>
+</div>
+</div>
+</div>
+
+<p>Wenn sie sich im Simulationsmodus befinden, dann k&ouml;nnen sie das
+eingegebene RT-Programm ausf&uuml;hren und bearbeiten. Wenn sie sich im Editiermodus
+befinden, dann k&ouml;nnen sie mittels <img alt="" src="pics/icons/guibutton.gif"
+height="20" width="30"><span class="guibutton">Simulieren</span> in den
+Simulationsmodus wechseln. ( <a href="ar01s03.html#modi"
+title="3.1. Editor-/Simulatormodus">Abschnitt 3.1: Editor-/Simulatormodus</a>
+) </p>
+
+<p></p>
+
+<div class="screenshot">
+
+<div class="mediaobject">
+<img src="pics/SimulierenBtn.jpg"></div>
+</div>
+
+<div class="sect4" lang="de">
+
+<div class="titlepage">
+
+<div>
+
+<div>
+<h5 class="title"><a name="simcontrol"></a>3.1.2.1. Simulatorsteuerung</h5>
+</div>
+</div>
+</div>
+
+<p></p>
+
+<div class="screenshot">
+
+<div class="mediaobject">
+<img src="pics/simkontrolle.jpg"></div>
+</div>
+
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;">
+
+<table border="0" summary="Note">
+  <tbody>
+    <tr>
+      <td valign="top" align="center" rowspan="2" width="25"><img
+        alt="[Anmerkung]" src="pics/icons/note.png"></td>
+      <th align="left"></th>
+    </tr>
+    <tr>
+      <td valign="top" align="left"><p>Nur im Simulationsmodus sind die
+        Schaltfl&auml;chen f&uuml;r die Simulationssteuerung aktiv. </p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<p><b><img alt="" src="pics/icons/guibutton.gif" height="20" width="30"><span
+class="guibutton">Bearbeiten</span> . </b> Wechselt in den Editiermodus (<a
+href="ar01s03.html#editmode" title="3.1.1. Editiermodus">Abschnitt 3.1.1:
+Editiermodus</a>) </p>
+
+<p><b><img alt="" src="pics/icons/guibutton.gif" height="20" width="30"><span
+class="guibutton">Reset</span> . </b> Setzt Programmz&auml;hler und Inhalte von
+Registern und Bussen wieder auf die Initialwerte </p>
+
+<p><b><img alt="" src="pics/icons/guibutton.gif" height="20" width="30"><span
+class="guibutton">Step</span> . </b> F&uuml;hrt den n&auml;chsten parallel
+Anweisungsblock aus </p>
+
+<p><b><img alt="" src="pics/icons/guibutton.gif" height="20" width="30"><span
+class="guibutton">MicroStep</span> . </b> F&uuml;hrt die n&auml;chste Anweisung
+innerhalb einer parallen Anweisungssequenz oder die erste der n&auml;chsten
+parallelen Anweisungssequenz aus </p>
+
+<p><b><img alt="" src="pics/icons/guibutton.gif" height="20" width="30"><span
+class="guibutton">Run</span> . </b> F&uuml;hrt das Programm aus bis es terminiert
+oder unterbrochen wird </p>
+
+<p><b><img alt="" src="pics/icons/guibutton.gif" height="20" width="30"><span
+class="guibutton">Breakpoints</span> . </b> &Ouml;ffnet das Breakpoint-Fenster <a
+href="ar01s08.html" title="8. Breakpoint-Fenster">Abschnitt 8:
+Breakpoint-Fenster</a> in dem Haltepunkte hinzugef&uuml;gt oder gel&ouml;scht werden
+k&ouml;nnen </p>
+</div>
+
+<div class="sect4" lang="de">
+
+<div class="titlepage">
+
+<div>
+
+<div>
+<h5 class="title"><a name="simmenu"></a>3.1.2.2. Simulator-Men&uuml;</h5>
+</div>
+</div>
+</div>
+
+<p></p>
+
+<div class="screenshot">
+
+<div class="mediaobject">
+<img src="pics/SimulatorMenu.jpg"></div>
+</div>
+
+<p><b><img alt="" src="pics/icons/guimenuitem.gif" height="25"
+width="20"><span class="guimenuitem">Reset<span
+class="accel">(STRG+R)</span></span> . </b> Setzt Programmz&auml;hler und Inhalte
+von Registern und Bussen wieder auf die Initialwerte. </p>
+
+<p><b><img alt="" src="pics/icons/guimenuitem.gif" height="25"
+width="20"><span class="guimenuitem">Step<span
+class="accel">(STRG+S)</span></span> . </b> F&uuml;hrt den n&auml;chsten parallel
+Anweisungsblock aus. </p>
+
+<p><b><img alt="" src="pics/icons/guimenuitem.gif" height="25"
+width="20"><span class="guimenuitem">MicroStep<span
+class="accel">(STRG+M)</span></span> . </b> F&uuml;hrt die n&auml;chste Anweisung
+innerhalb einer parallen Anweisungssequenz oder die erste der n&auml;chsten
+parallelen Anweisungssequenz aus. </p>
+
+<p><b><img alt="" src="pics/icons/guimenuitem.gif" height="25"
+width="20"><span class="guimenuitem">Run</span> . </b> F&uuml;hrt das Programm aus
+bis es terminiert oder unterbrochen wird. </p>
+
+<p><b><img alt="" src="pics/icons/guimenuitem.gif" height="25"
+width="20"><span class="guimenuitem">Breakpoints</span> . </b> &Ouml;ffnet das
+Breakpoint-Fenster <a href="ar01s08.html"
+title="8. Breakpoint-Fenster">Abschnitt 8: Breakpoint-Fenster</a> in dem
+Haltepunkte hinzugef&uuml;gt oder gel&ouml;scht werden k&ouml;nnen. </p>
+
+<p><b><img alt="" src="pics/icons/guimenuitem.gif" height="25"
+width="20"><span class="guimenuitem">Alle Speicher r&uuml;cksetzen</span> . </b>
+L&ouml;scht den Inhalt aller deklarierten Speicher. </p>
+
+<p><b><img alt="" src="pics/icons/guimenuitem.gif" height="25"
+width="20"><span class="guimenuitem">Log l&ouml;schen</span> . </b> L&ouml;scht den
+Inhalt des Logfensters. (<a href="ar01s09.html"
+title="9. Das Logfenster">Abschnitt 9: Das Logfenster</a>) </p>
+</div>
+</div>
+
+<div class="sect3" lang="de">
+
+<div class="titlepage">
+
+<div>
+
+<div>
+<h4 class="title"><a name="designmenu"></a>3.1.3. Entwurf</h4>
+</div>
+<img src="pics/Entwurf.JPG">
+<br>
+</div>
+</div>
+</div>
+
+<div class="sect3" lang="de">
+
+<div class="titlepage">
+
+<div>
+
+<div>
+<h4 class="title"><a name="designmenu1"></a>3.1.3.1. Signale zeigen</h4>
+</div>
+</div>
+</div>
+<p>Die Funktion 'Signale zeigen' errechnet aus einem eingegebenen Programm
+die n&ouml;tigen Kontrollsignale eines vom Programm beschriebenen Operationswerk.
+Die Kontrollsignale werden in einem neuen Fenster aufgelistet. &Uuml;ber die
+Schaltfl&auml;che <img alt="" src="pics/icons/guibutton.gif"height="20" width="30">
+<span class="guibutton">Schliessen</span> kann dieses Fenster wieder geschlossen
+werden.
+</p>
+<img src="pics/Signale.JPG">
+<br>
+</div>
+
+<div class="sect3" lang="de">
+
+<div class="titlepage">
+
+<div>
+
+<div>
+<h4 class="title"><a name="designmenu2"></a>3.1.3.2. Low-Level-Modell ableiten</h4>
+</div>
+</div>
+</div>
+<p>Diese Funktion berechnet ein Low-Level-Modell aus dem gegebenem Programm. Dazu
+werden vor allem parallele Anweisungen, die mit dem Pipe-Operator gekennzeichnet
+wurden, in sequenzielle Anweisungen &uuml;berf&uuml;hrt.
+</p>
+<img src="pics/LLM.JPG">
+</div>
+
+<div class="sect3" lang="de">
+
+<div class="titlepage">
+
+<div>
+
+<div>
+<h4 class="title"><a name="designmenu3"></a>3.1.3.3. VHDL-Export</h4>
+</div>
+</div>
+</div>
+<p>Mit diesem Men&uuml;punkt wird ein VHDL-Modell des eingegebenen RTeasy-Programms
+generiert. Das RTeasy-Programm muss dabei lauff&auml;hig sein. Eine
+Fehlermeldung weist aus eventuell vorhandene Programmfehler hin, die
+behoben werden m&uuml;ssen, bevor ein VHDL-Modell generiert werden kann.
+Es sei darauf hingewiesen, dass der generierte VHDL-Code maschinell
+erzeugt wird. Das kann zu redundanten Programmteilen und kleineren
+Fehlern f&uuml;hren. Es ist daher empfehlenswert, den VHDL-Code auf
+Fehler zu pr&uuml;fen.
+</p>
+</div>
+
+<div class="sect3" lang="de">
+
+<div class="titlepage">
+
+<div>
+
+<div>
+<h4 class="title"><a name="helpmenu"></a>3.1.4. Hilfe-Men&uuml;</h4>
+</div>
+</div>
+</div>
+
+<p><b><img alt="" src="pics/icons/guimenuitem.gif" height="25"
+width="20"><span class="guimenuitem">Hilfe</span> . </b> Zeigt die
+Hilfeseiten von RTeasy an. </p>
+
+<p><b><img alt="" src="pics/icons/guimenuitem.gif" height="25"
+width="20"><span class="guimenuitem">&Uuml;ber</span> . </b> Zeigt Informationen
+&uuml;ber das Programm. </p>
+</div>
+</div>
+</div>
+<br>
+<table border="0" width="100%">
+	<tr><td>
+<a href="ar01s02.html">Zur&uuml;ck</a></td>
+	<td width="70%">&#160;</td>
+	<td><div align="right">
+<a href="ar01s04.html">Weiterbl&auml;ttern</a>
+	</div></td></tr>
+</table>
+</body>
+</html>

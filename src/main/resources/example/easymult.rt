@@ -1,0 +1,15 @@
+% University of Luebeck - RTeasy Version 0.3.4 %
+#Easy-Multiplier
+declare register A(0:7), FAKTOR(0:7), ERG(0:7)
+declare bus INBUS(0:7), OUTBUS(0:7)
+BEGIN:
+A <- INBUS, ERG <- 0;
+FAKTOR <- INBUS;
+LOOP:
+if FAKTOR<>0 then
+  ERG <- ERG + A,
+  FAKTOR <- FAKTOR - 1,
+  goto LOOP
+else
+  OUTBUS <- ERG
+fi;

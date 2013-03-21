@@ -1,0 +1,90 @@
+<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>5. Simulationsstatus-Fenster</title>
+<link href="default.css" rel="stylesheet" type="text/css">
+<style type="text/css">
+.bluetext {
+color: #000000;
+background-color: #00FFFF;
+}
+.yellowtext {
+color: #000000;
+background-color: #FFFF00;
+}
+</style>
+<meta content="DocBook XSL Stylesheets V1.70.1" name="generator">
+<link rel="start" href="index.html" title="RTeasy Hilfe">
+<link rel="up" href="index.html" title="RTeasy Hilfe">
+<link rel="prev" href="ar01s04.html" title="4. Editorfenster">
+<link rel="next" href="ar01s06.html" title="6. Speicher">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="sect1" lang="de"><div class="titlepage">
+<div>
+<div>
+<h2 class="title" style="clear: both"><a name="simstatus"></a>5. Simulationsstatus-Fenster</h2>
+</div></div></div><p>
+		<div class="screenshot"><div class="mediaobject"><img src="pics/Simustatus.JPG"></div></div>
+	</p><p>
+		Das Simulationsstatus-Fenster wird nur w&auml;hrend der Simulation (<a href="ar01s03.html#simmode" 
+		title="3.1.2. Simulationsmodus">Abschnitt 3.1.2: Simulationsmodus</a>) angezeigt.
+		In diesem Fenster befinden sich alle Informationen zu Registern, Bussen, Speichern, Registerarrays und dem 
+		Zustands- und Programmz&auml;hler.
+	</p><p><b>Zustand- und Programmz&auml;hler.&nbsp;</b>
+		<div class="screenshot"><div class="mediaobject"><img src="pics/programmzaehler.jpg"></div></div>
+
+		Hier werden der zuletzt ausgef&uuml;hrte Zustand sowie die Anzahl der vergangenen Takte angezeigt.
+	</p><p><b>Register und Busse.&nbsp;</b>
+		<div class="screenshot"><div class="mediaobject"><img src="pics/regundbus.jpg"></div></div>
+		Hier werden die Inhalte von Registern und Bussen angezeigt. Diese <span class="yellowtext">Farbe</span>
+			signalisiert, dass der Wert eines Registers bzw. eines Busses im letzten Schritt ver&auml;ndert 
+			wurde. Mit einem Mausklick auf den Wert des Registers kann man diesen ver&auml;ndern. Der Wert 
+			wird erst &uuml;bernommen, wenn der der Wert mit der ENTER-Taste oder mit einem Klick ausserhalb 
+			des Feldes best&auml;tigt wird. Mit ESC wird der eingegebene Wert verworfen. Die dritte Spalte zeigt 
+			an, mit welcher Basis die Werte angezeigt und gesetzt werden.
+	</p><div class="table"><a name="basetable"></a>
+	<p class="title"><b>Tabelle 3. Basisdarstellung</b></p>
+	<div class="table-contents">
+	<table summary="Basisdarstellung" border="1"><colgroup><col><col><col><col></colgroup>
+	<thead><tr><th>Wert</th>
+	<th align="right">Basis</th>
+	<th align="center">Eingabezeichen</th>
+	<th align="center">Bedeutung</th></tr></thead>
+	<tbody><tr><td>BIN</td><td align="right">2</td><td align="center">0, 1</td><td>Bin&auml;rdarstellung</td></tr>
+	<tr><td>DEC</td><td align="right">10</td><td align="center">0,...,9 </td><td>Dezimaldarstellung ohne Vorzeichen</td></tr>
+	<tr><td>HEX</td><td align="right">16</td><td align="center">0,..,9,A,...,F</td><td>Hexadezimaldarstellung 
+	ohne Vorzeichen </td></tr>
+	<tr><td>DEC2</td><td align="right">10</td><td align="center">0,..,9</td><td>Dezimaldarstellung mit 
+	Vorzeichen </td></tr>
+	<tr><td>HEX2</td><td align="right">16</td><td align="center">0,...,9,A,...,F</td><td>Hexadezimaldarstellung 
+	mit Vorzeichen </td></tr></tbody></table></div></div>
+	<br class="table-break">
+	<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;">
+	<table border="0" summary="Note"><tr>
+	<td valign="top" align="center" rowspan="2" width="25">
+	<img alt="[Anmerkung]" src="pics/icons/note.png"></td>
+	<th align="left"></th></tr><tr><td valign="top" align="left">
+	<p>Eingaben, die die Bitbreite des Busses/Registers &uuml;bersteigen werden von links 
+	abgeschnitten.</p></td></tr></table></div>
+	<p><b>Speicher.&nbsp;</b>
+		<div class="screenshot"><div class="mediaobject"><img src="pics/Speicher.JPG"></div></div>
+		Zu jedem deklarierten Speicher wird eine Schaltfl&auml;che angezeigt, mit der man das Fenster f&uuml;r den 
+		jeweiligen Speicher anzeigen lassen kann. 
+		(<a href="ar01s06.html" title="6. Speicher">Abschnitt 6: Speicher</a>)
+	</p>
+	<p><b>Registerarrays.&nbsp;</b>
+	<div class="screenshot"><div class="mediaobject"><img src="pics/RegArray.JPG"></div></div>
+	Ebenfalls zu jedem deklarierten Registerarray ist eine Schaltfl&auml;che vorhanden, die das zugeh&ouml;rige
+	Fenster &ouml;ffnet, um den Inhalt zu verwalten
+	(<a href="ar01s07.html" title="7. RegArray">Abschnitt 7: Registerarrays</a>).</p>
+	</div>
+<br>
+<table border="0" width="100%">
+	<tr><td>
+<a href="ar01s04.html">Zur&uuml;ck</a></td>
+	<td width="70%">&#160;</td>
+	<td><div align="right">
+<a href="ar01s06.html">Weiterbl&auml;ttern</a>
+	</div></td></tr>
+</table>
+	</body>
+	</html>

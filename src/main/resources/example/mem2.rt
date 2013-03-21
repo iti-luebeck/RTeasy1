@@ -1,0 +1,5 @@
+declare register A(7:0), AR1(7:0), AR2(7:0), DR1(7:0), DR2(7:0)
+declare memory MEM1(AR1,DR1), MEM2(AR1,DR1)
+
+AR1 <- 56, AR2 <- 77, DR1 <- 255, DR2 <- 127;
+write MEM1, write MEM2;

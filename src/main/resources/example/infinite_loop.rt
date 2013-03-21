@@ -1,0 +1,5 @@
+declare register A(31:0)
+BEGIN: A <- 0;
+LOOP:  A <- A + 1;
+JUMP:  goto LOOP;
+END:   A <- 0;

@@ -1,0 +1,4 @@
+declare register AR(15:0), DR(7:0)
+declare memory MEM(AR,DR)
+BEGIN:
+AR <- 1, DR <- 255;

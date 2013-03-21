@@ -1,0 +1,42 @@
+declare register A(0:7), B(0:7)
+declare register AR(0:15), DR(0:7)
+declare bus SYSBUS(0:7)
+declare memory MEM(AR,DR)
+BEGIN:
+B <- 255;
+B <- %11111111;
+B <- $FF;
+A(0:3) <- B(4:7), A(4:7) <- 0;
+A <- not A;
+A <- A and B;
+B <- $02;
+SYSBUS <- B, AR(0:7) <- SYSBUS;
+B <- $FF;
+SYSBUS <- B, AR(8:15) <- SYSBUS;
+B <- 5;
+SYSBUS <- B, DR <- SYSBUS;
+write MEM;
+B <- 2;
+SYSBUS <- B, DR <- SYSBUS;
+read MEM;
+SYSBUS <- DR, B <- SYSBUS;
+A <- %10101010,
+B <- $FF;
+B <- A or B;
+B <- %01010101;
+B <- A xor B;
+B <- A nor B;
+B <- A nand B;
+A <- 1, B <- 255;
+B <- A + B;
+B <- B - A;
+B <- -B;
+B <- %00011010;
+B(0) <- 1 < 2;
+B(1) <- 2 < 1;
+B(2) <- 1 = 1;
+B(3) <- 1 <> 1;
+B(4) <- 1 >= 2;
+B(5) <- 1 <= 2;
+A <- A(0).B(0).A(0).B(0).A(0).B(0).A(0).B(0); # da muss %11111111 rauskommen
+

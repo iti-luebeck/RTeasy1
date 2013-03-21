@@ -1,0 +1,8 @@
+declare register A(7:0)
+declare bus BUS(7:0)
+
+BEGIN:
+A <- BUS;
+LOOP:
+A <- A + A | if A < 64 then goto LOOP fi;
+BUS <- A;

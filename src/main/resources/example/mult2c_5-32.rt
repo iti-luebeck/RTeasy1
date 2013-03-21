@@ -1,0 +1,15 @@
+% University of Luebeck - RTeasy Version 0.3.4 %
+#Mult2c_5-32
+declare register	A(0:7), M(0:7), Q(0:7), COUNT(0:2), F
+declare bus		INBUS(0:7), OUTBUS(0:7)
+BEGIN:		A <- 0, COUNT <- 0, F <- 0,
+INPUT:		M <- INBUS;
+		Q <- INBUS;
+ADD:		if Q(7) then A <- A + M fi,
+		F <- M(0) and Q(7) or F;
+RIGHTSHIFT:	A(0) <- F, A(1:7).Q <- A.Q(0:6),
+TEST:		if COUNT = 6 then goto CORRECT
+		else COUNT <- COUNT + 1, goto ADD fi;
+CORRECT:	if Q(7) then A <- A - M, Q(7) <- 0 fi;
+OUTPUT:		OUTBUS <- Q;
+		OUTBUS <- A;

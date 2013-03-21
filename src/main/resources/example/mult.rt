@@ -1,0 +1,15 @@
+% University of Luebeck - RTeasy Version 0.3.4 %
+#Multiplier
+declare register        A(0:7), M(0:7), Q(0:7), COUNT(0:2)
+declare bus             INBUS(0:7), OUTBUS(0:7)
+BEGIN:          A <- 0, COUNT <- 0,
+INPUT:          M <- INBUS;
+                Q <- INBUS;
+ADD:		if Q(7) then A<-A(1:7)+M(1:7) else A(7) <- 0 fi;
+RIGHTSHIFT:     A(0) <- 0, A(1:7).Q <- A.Q(0:6),
+TEST:           COUNT <- COUNT + 1;
+                if COUNT <> 7 then goto ADD else
+                A(0) <- M(0) xor Q(7), Q(7) <- 0 fi;
+OUTPUT:         OUTBUS <- Q;
+                OUTBUS <- A;
+

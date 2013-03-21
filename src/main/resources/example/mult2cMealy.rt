@@ -1,0 +1,24 @@
+# 2er-Kompl. Multiplikation fuer Mealy-Aut.
+component MULT2CMEALY;
+
+interface
+  in  INBUS(7:0), BEGIN;
+  out OUTBUS(7:0), END;
+
+structure
+declare register  A(7:0), M(7:0), Q(7:0), COUNT(2:0), F;
+   		  
+behaviour
+
+START:		if BEGIN then A <- 0, COUNT <- 0, F <- 0, END <- 0,
+                              M <- INBUS else goto START fi;
+INPUT:		Q <- INBUS;
+TEST:		if COUNT <> 7 then 
+                  if Q(0) then A <- A + M, F <- (M(7) and Q(0)) or F, goto RSHIFT 
+                  else A(7) <- F, A(6:0).Q <- A.Q(7:1), COUNT <- COUNT + 1, goto TEST fi
+		else if Q(0) then A <- A - M, Q(0) <- 0, goto TEST 
+                     else  OUTBUS <- Q fi fi;
+OUTPUT:		OUTBUS <- A, END <- 1, goto START;
+RSHIFT:         A(7) <- F, A(6:0).Q <- A.Q(7:1), COUNT <- COUNT + 1, goto TEST;
+
+end component MULT2CMEALY;

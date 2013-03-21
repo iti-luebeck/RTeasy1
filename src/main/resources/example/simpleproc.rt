@@ -1,0 +1,88 @@
+% University of Luebeck - RTeasy Version 0.3.4 %
+# simple accumulator machine
+
+# Instruction Set
+# Opcode	Mnemonic	Behaviour
+# 000000 -  0	HALT		stop machine
+# 010001 - 17	LOADMEM	addr	A <- MEM[addr]
+# 010010 - 18	ADDMEM addr	A <- A + MEM[addr]
+# 010011 - 19	ANDMEM addr	A <- A and MEM[addr]
+# 010100 - 20	ORMEM addr	A <- A or MEM[addr]
+# 001001 -  9	STOREMEM addr	MEM[addr] <- A
+# 100001 - 33	LOADIMM const	A <- const
+# 100010 - 34	ADDIMM const	A <- A + const
+# 100011 - 35	ANDIMM const	A <- A and const
+# 100100 - 36	ORIMM const	A <- A or const
+# 110001 - 49	LOADIND         A <- MEM[X]
+# 110010 - 50	ADDIND          A <- A + mem[X]
+# 110011 - 51	ANDIND		A <- A and mem[X]
+# 110100 - 52	ORIND		A <- A or mem[X]
+# 001000 -  8	STOREIND        MEM[X] <- A
+# 001010 - 10	BRANCH addr	PC <- addr
+# 001011 - 11	BRANCHZ addr	if A = 0 then PC <- addr
+# 001100 - 12	ATOX            X <- A
+# 001101 - 13	XTOA            A <- X
+# 001110 - 14	SWAP            A <- X, X <- A
+# 000101 -  5	NEGA		A <- not A
+
+declare register AR(7:0), DR(7:0), A(7:0), X(7:0), PC(7:0), IR(5:0);
+declare memory MEM(AR,DR);
+
+# behaviour
+
+  INIT:  AR <- 0;
+
+  # assume AR = PC
+  FETCH:    read MEM, AR <- AR + 1, PC <- PC + 1, IR <- 0 |
+            if DR(5:4)=0 then
+              if DR(3:0)=0 then goto end
+              else if DR(3:0)=8 then goto STOREIND
+              else if DR(3:0)=9 then goto STOREMEM
+              else if DR(3:0)=10 then goto BRANCH
+              else if DR(3:0)=11 then goto BRANCHZ
+              else goto EXEC fi fi fi fi fi  # ugly, need for elsif
+            fi,
+            if DR(5:4)=1 then goto READMEM fi,
+            if DR(5:4)=2 then goto READIMM fi,
+            if DR(5:4)=3 then goto READIND fi;
+
+  READIND:  IR <- DR(5:0), AR <- X;
+            read MEM, goto EXEC;
+
+  READMEM:  IR <- DR(5:0), read MEM;
+            AR <- DR;
+            read MEM, PC <- PC + 1, goto EXEC;
+
+  READIMM:  IR <- DR(5:0), read MEM, PC <- PC + 1, goto EXEC;
+
+  EXEC:     if IR(3:0) = 0 then
+              if DR(3:0) = 5 then A <- not A fi,
+              if DR(3:0) = 12 then X <- A fi,
+              if DR(3:0) = 13 then A <- X fi,
+              if DR(3:0) = 14 then A <- X, X <- A fi,
+              if DR(3:0) > 5 and DR(3:0) < 12 or DR(3:0) = 15 then goto ERROR
+              else goto FETCH fi
+            else
+              if IR(3:0) = 1 then A <- DR fi,
+              if IR(3:0) = 2 then A <- A + DR fi,
+              if IR(3:0) = 3 then A <- A and DR fi,
+              if IR(3:0) = 4 then A <- A or DR fi,
+              if IR(3:0) > 4 then goto ERROR
+              else goto FETCH fi
+            fi,
+            AR <- PC;
+           
+  STOREIND: AR <- X, DR <- A;
+            write MEM, AR <- PC, goto FETCH;
+
+  STOREMEM: read MEM;
+            AR <- DR, DR <- A, PC <- PC + 1;
+            write MEM, AR <- PC, goto FETCH;
+
+  BRANCH:   read MEM;
+            PC <- DR, AR <- DR, goto FETCH;
+
+  BRANCHZ:  if A = 0 then read MEM else PC <- PC + 1, AR <- PC + 1, goto FETCH fi;
+            PC <- DR, AR <- DR, goto FETCH;
+
+  ERROR: goto ERROR;
