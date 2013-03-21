@@ -1,0 +1,916 @@
+\documentclass[11pt,a4paper,noonelinecaption]{scrartcl}
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{colortbl}
+\usepackage{cite}
+\title{RTeasy Tutorial}
+\author{Universität zu Lübeck \\ Institut für Technische Informatik}
+
+\begin{document}
+\parindent0mm
+\definecolor{Gray}{gray}{0.8}
+\definecolor{lightblue}{rgb}{0,1,1}
+\definecolor{orange}{rgb}{1,0.5,0}
+\maketitle
+\begin{center}
+\includegraphics[width=4cm]{iti-logo.pdf}
+\end{center}
+\newpage
+\tableofcontents
+\newpage
+
+\section{Einleitung}
+
+RTeasy ist eine Entwicklungsumgebung für die Registertransfersprache. Mit RTeasy
+ist es möglich, Registertransferprogramme zu entwerfen und zu simulieren.
+
+\section{Die Registertransfersprache RTeasy}
+Eine Registertransfersprache (RT-Sprache) dient zur Beschreibung der Hardware
+durch Registeroperationen. Dabei wird folgendes Grundmuster für Operationen
+verwendet:
+\begin{align}
+Z\leftarrow f(X_1, X_2, \ldots, X_m)
+\end{align}
+wobei $Z, X_1, X_2, \ldots, X_m$ Bezeichnungen für Register darstellen und die
+Funktion f die Operation beschreibt, dessen Ergebnis in Z abgelegt wird.
+\newline
+\textbf{Deklarationen:}\\
+Zur Deklaration von Komponenten wird der Befehl \texttt{declare} verwendet.
+Dabei gibt es folgende Möglichkeiten:
+\begin{align}
+declare~register~R(0:7),~ S(0:7)
+\end{align}
+deklariert zwei 8-Bit Register R und S.
+\begin{align}
+declare ~register ~array ~RA(0:7)[5]
+\end{align}
+deklariert ein Registerarray RA mit 5 Registern, die jeweils
+eine Breite von 8 Bits haben.
+\begin{align}
+declare ~bus ~INBUS(0:7), ~OUTBUS(0:7)
+\end{align}
+deklariert zwei 8-Bit Busse.
+\begin{align}
+declare ~register ~AR(0:15), ~DR(0:7)\\
+declare ~memory ~MEM(AR,DR)
+\end{align}
+Der Speicher MEM hat das Adressregister A und das Datenregister DR, sodass der
+Speicher die Größe $2^{16} = 64$ KByte und 1 Byte Breite hat.\\
+\newline
+\textbf{Unbedingte Operationen}\\
+Pro Taktzyklus können mehrere Operationen gleichzeitig (parallel) ausgeführt
+werden (durch Komma getrent). Trennung zum nächsten Taktzyklus durch Semikolon.
+\begin{align}
+A\leftarrow A~ + ~M, ~M \leftarrow INBUS;\\
+OUTBUS \leftarrow A, ~A \leftarrow M, ~M \leftarrow 0;
+\end{align}
+Im gleichen Takt wird A um den Inhalt aus M erhöht und M vom INBUS neu geladen.
+Im nächsten Takt wird A auf OUTBUS ausgegeben, M nach A transferiert und M
+gelöscht.\\
+\textbf{Wichtig:}\\
+Busse können nicht speichern, d.h. auf den Bus gelegte Daten müssen im gleichen
+Takt abgeholt werden.\\
+\textbf{Bitweise Operationen:}\\
+\begin{align}
+A(0) <- M(0) xor A(0), ~A(7) <- 0, ~B(3) <- B(2);
+\end{align}
+\textbf{Zähloperationen:}\\
+\begin{align}
+COUNT \leftarrow COUNT ~+ ~1;
+\end{align}
+\textbf{Shiftoperationen:}\\
+\begin{align}
+A(7)\leftarrow A(0), ~A(0:6)\leftarrow A(1:7);
+\end{align}
+Ein Ringshift nach links in A.\\
+\newline
+\textbf{Speicheroperationen:}\\
+\begin{align}
+READ ~MEM;\\
+WRITE ~MEM;
+\end{align}
+Lese- und Schreiboperation. Die Daten müssen vor dem Befehlsaufruf in die
+entsprechenden Register gelegt werden.\\
+\newline
+\textbf{Unbedingte Sprünge:}\\
+\begin{align}
+MARKE: ~M\leftarrow 0;~~~~~~~~~~~~~~~~~~~~~~\\
+\ldots~~~~~~~~~~~~~~~\\
+A \leftarrow A~+~M, ~goto ~MARKE;
+\end{align}
+Der Befehl \texttt{goto} führt einen Sprung an die angegebene Marke aus. Es
+kann nicht in if-Anweisungen hinein gesprungen werden.\\
+\newline
+\textbf{Bedingte Operationen:}\\
+\begin{align}
+if ~COUNT ~= ~0 ~then ~A \leftarrow 0, ~M \leftarrow 0 ~fi;
+\end{align}
+Die Operationen werden nur ausgeführt, wenn die Bedingung erfüllt ist. Test und
+Ausführung finden im gleichen Takt statt.\\
+\begin{align}
+switch ~R(0:3) ~\{\\
+	case ~0: ~goto ~A\\
+	case ~1: ~goto ~B\\
+	default: ~goto ~END\\
+\};
+\end{align}
+Die Operationen werden nur ausgeführt, wenn das Register R mit den
+einzelnen case übereinstimmt. Test und Ausführung finden im gleichen Takt statt.
+
+\section{RTeasy starten}
+Um RTeasy benutzen zu können, benötigen sie eine Java Virtual Maschine(JVM).
+Bei Problemen überprüfen Sie bitte die Systemvoraussetzungen auf den
+zugehörigen Webseiten des Instituts für Technische Informatik an der
+Universität zu Lübeck. Sie starten RTeasy über die Shell mit dem Befehl 
+\texttt{java -jar rteasy\underline{ }<version>.jar}
+\newline
+Es öffnet sich das Hauptfenster (Abschnitt 4: Hauptfenster). Sie können nun die
+Einstellungen von RTeasy anpassen (Abschnitt 4.1.1.2: Bearbeitungsmenü), ein
+neues Programm erstellen oder ein vorhandenes Programm öffnen (Abschnitt
+4.1.1.1: Dateimenü).
+\newpage
+
+\section{Hauptfenster}
+\begin{figure}[h]
+\includegraphics[width=14.5cm]{Hauptfenster.JPG}
+\caption{Hauptfenster}
+\end{figure}
+
+Das Hauptfenster ist der "Desktop" für die anderen RTeasyfenster. Alle Fenster
+können innerhalb dieser Arbeitsfläche beliebig platziert werden.
+In der Menüleiste befinden sich die Menüpunkte
+\begin{itemize}
+  \item Datei (Abschnitt 4.1.1.1: Dateimenü)
+  \item Bearbeiten (Abschnitt 4.1.1.2: Bearbeitungsmenü)
+  \item Simulator (Abschnitt 4.1.2.2: Simulator-Menü)
+  \item Hilfe (Abschnitt 4.1.4: Hilfemenü)
+\end{itemize}
+Je nachdem, ob Sie sich im Editier- (Abschnitt 4.1.1: Editiermodus) oder
+Simulationsmodus (Abschnitt 4.1.2: Simulationsmodus) befinden, sind
+unterschiedliche Punkte in den Menüs aktiv. Darunter befindet sich die Leiste
+für die Simulationskontrolle (Abschnitt 4.1.2.1: Simulatorsteuerung). Im
+Editiermodus sind alle Schaltflächen inaktiv, bis auf die Schaltfläche
+\includegraphics[width=0.8cm]{Button.JPG} Simulieren.
+\newpage
+
+\subsection{Editor-/Simulatormodus}
+RTeasy kann sich in zwei unterschiedlichen Zuständen befinden. Im Editiermodus
+(Abschnitt 4.1.1: Editiermodus) können Sie ein RTeasy-Programm bearbeiten und
+verändern. Außerdem können Sie sich in diesem Modus die Übersetzung in VHDL
+anzeigen lassen. Im Simulationsmodus (Abschnitt 4.1.2: Simulationsmodus) können
+Sie das Programm ausführen und sich die Register-, Bus- und Speicherinhalte
+anzeigen lassen. In diesem Modus können Sie das Programm nicht verändern.
+
+\subsubsection{Editiermodus}
+Sie befinden sich standardmäßig in diesem Modus, wenn eine Datei geladen wird
+oder ein neues Programm erzeugt wird. Befindet sich RTeasy im Simulationsmodus,
+können Sie die Schaltfläche
+\includegraphics[width=0.8cm]{Button.JPG} Bearbeiten benutzen, um in den
+Editiermodus zu gelangen.
+\begin{figure}[h]
+\includegraphics{Bearbeiten.JPG}
+\caption{Schaltfläche Bearbeiten}
+\end{figure}
+
+\paragraph{4.1.1.1 Dateimenü}$~~$\\
+\begin{figure}[h]
+\includegraphics[width=4.5cm]{Dateimenue.JPG}
+\caption{Dateimenü}
+\end{figure}
+\newline
+\includegraphics[width=0.5cm]{Hinweis.JPG} Diese Menüpunkte beenden den
+Simulationsmodus und wechseln in den Editiermodus.
+\begin{itemize}
+  \item Neu. Schließt das aktuelle RTeasy-Programm und öffnet ein neues, leeres
+  RT-Programm im Editorfenster (Abschnitt 5: Editorfenster)
+  \item Öffnen(F3). Lädt ein RTeasy-Programm aus einer Datei in den Editor
+  \item Speichern(F2). Speichert das Programm an den Ort, der in der Kopfzeile
+  des Editorfensters angezeigt wird. Sollte die Datei noch nie abgespeichert
+  worden sein, öffnet sich ein Dialog, in dem Sie auswählen können, an welchen
+  Ort die Datei gespeichert werden soll.
+  \item Speichern als(STRG+F2). Speichert das Programm an den im Dialog
+  ausgewählten Ort.
+  \item Beenden. Beendet RTeasy.
+\end{itemize}
+
+\paragraph{4.1.1.2 Bearbeitungsmenü}$~~$\\
+\begin{figure}[h]
+\includegraphics[width=4.5cm]{EditMenue.JPG}
+\caption{Bearbeitungsmenü}
+\end{figure}
+\newline
+\includegraphics[width=0.5cm]{Hinweis.JPG} Diese Menüpunkte sind nur im
+Editiermodus aktiv (Abschnitt 4.2: Editiermodus).
+\begin{itemize}
+  \item Rückgängig(STRG+Z). Macht die letzte Änderung rückgängig.
+  \item Kopieren(STRG+C). Kopiert den im Editor markierten Text in die
+  Zwischenablage.
+  \item Ausschneiden(STRG+X). Entfernt den im Editor markierten Text und
+  kopiert ihn in die Zwischenablage. 
+  \item Einfügen(STRG+V). Fügt den Inhalt der Zwischenablage an die
+  aktuelle Cursorposition im Editorfenster ein.
+  \item Pretty Print. Dieser Menüpunkt versucht das Programm zu kompilieren.
+  Ist dies erfolgreich,  dann wird das Programm in eine einheitliche und
+  übersichliche Struktur gebracht. Warnungen werden soweit wie möglich behoben.
+  Die auftretenden Fehler und Warnungen erscheinen im Logfenster (Abschnitt 9:
+  Das Logfenster).
+  \item Einstellungen. Hier können sie das Verhalten und Aussehen von
+  RTeasy anpassen.
+  \begin{itemize}
+    \item Language/Sprache: Hier können Sie die Sprache für
+    Schaltflächenbeschriftungen, Fehlermeldungen usw. festlegen
+    \item Plug\&Feel: Legt das Aussehen der RTeasyfenster fest.
+    \item Ausführliche Warnungen: Warnungen werden mit ausgegeben.
+  \end{itemize}
+\end{itemize}
+\newpage
+
+\subsubsection{Simulationsmodus}
+
+Wenn Sie sich im Simulationsmodus befinden, dann können Sie das eingegebene
+RT-Programm ausführen und bearbeiten. Wenn Sie sich im Editiermodus befinden,
+dann können Sie mittels
+\includegraphics[width=0.8cm]{Button.JPG} Simulieren in den Simulationsmodus
+wechseln. (Abschnitt 4.1: Editor-/Simulationsmodus)
+\begin{figure}[h]
+\includegraphics{Simubutton.JPG}
+\caption{Der Simulationsbutton}
+\end{figure}
+
+\paragraph{4.1.2.1 Simulatorsteuerung}$~~$\\
+\begin{figure}[h]
+\includegraphics{Simulatorsteuerung.JPG}
+\caption{Simulatorsteuerung}
+\end{figure}
+
+\includegraphics[width=0.5cm]{Hinweis.JPG} Nur im Simulationsmodus sind die
+Schaltflächen für die Simulationssteuerung aktiv.
+\begin{itemize}
+  \item \includegraphics[width=0.8cm]{Button.JPG} Bearbeiten. Wechselt in den
+  Editiermodus (Abschnitt 4.1.1: Editiermodus).
+  \item \includegraphics[width=0.8cm]{Button.JPG} Reset. Setzt Programmzähler
+  und Inhalte von Registern und Bussen wieder auf die Initialwerte.
+  \item \includegraphics[width=0.8cm]{Button.JPG} Step. Führt den nächsten
+  parallel Anweisungsblock aus.
+  \item \includegraphics[width=0.8cm]{Button.JPG} MicroStep. Führt die nächste
+  Anweisung innerhalb einer parallelen Anweisungssequenz oder die erste der
+  nächsten parallelen Anweisungssequenz aus.
+  \item \includegraphics[width=0.8cm]{Button.JPG} Run. Führt das Programm aus,
+  bis es terminiert oder unterbrochen wird.
+  \item \includegraphics[width=0.8cm]{Button.JPG} Breakpoints. Öffnet das
+  Breakpoint-Fenster (Abschnitt 8: Breakpoint-Fenster), in dem Haltepunkte
+  hinzugefügt oder gelöscht werden können.
+\end{itemize}
+\newpage
+
+\paragraph{4.1.2.2 Simulatormenü}$~~$\\
+\begin{figure}[h]
+\includegraphics{Simumenue.JPG}
+\caption{Simulatormenü}
+\end{figure}
+
+\begin{itemize}
+  \item Reset(STRG+R). Setzt Programmzähler und Inhalte von Registern und
+  Bussen wieder auf die Initialwerte.
+  \item Step(STRG+S). Führt den nächsten parallelen Anweisungsblock aus.
+  \item MicroStep(STRG+M). Führt die nächste Anweisung innerhalb einer
+  parallelen Anweisungssequenz oder die erste der nächsten parallelen
+  Anweisungssequenz aus.
+  \item Run. Führt das Programm aus, bis es terminiert oder unterbrochen wird.
+  \item Breakpoints. Öffnet das Breakpoint-Fenster (Abschnitt 8:
+  Breakpoint-Fenster), in dem Haltepunkte hinzugefügt oder gelöscht werden
+  können.
+  \item Alle Speicher rücksetzen.  Löscht den Inhalt aller deklarierten
+  Speicher.
+  \item Log löschen. Löscht den Inhalt des Logfensters. (Abschnitt 9: Das
+  Logfenster).
+  \item Kommando eingeben (F4). Öffnet einen Eingabedialog in dem vordefinierte
+  Kommandos eingegeben werden können. Eine Tabelle der vordefinierten Kommandos
+  befindet sich in Abschnitt 4.1.2.3: Kommando eingeben.
+\end{itemize}
+
+\paragraph{4.1.2.3 Kommando eingeben}$~~$\\
+Die Funktion 'Kommando eingeben' lässt sich über die Menüleiste im Menüpunkt
+'Simulator' oder über das Drücken der F4-Taste aufrufen. Es öffnet sich ein 
+Eingabedialog, in dem die gewünschten Kommandos eingegeben werden können.
+Der Button \includegraphics[width=0.8cm]{Button.JPG}Ok startet die Ausführung
+des eingegebenen Kommandos. Über den Button
+\includegraphics[width=0.8cm]{Button.JPG}Abbrechen wird die Funktion
+abgebrochen. Die vordefinierten Kommandos können der nachfolgenden Tabelle
+entnommen werden.
+\begin{table}
+\caption{Überblick über vordefinierte Kommandos}
+\begin{tabular}[h]{cl}
+\hline Kommando & Beschreibung \\
+\hline
+\hline
+\rowcolor{Gray}
+\hline
+epaste & Einfügen von Text, der in die Zwischenablage kopiert wurde\\
+ecopy & Kopieren von markiertem Text in die Zwischenablage\\
+\rowcolor{Gray}
+ecut & Ausschneiden von markiertem Text und Kopie in die Zwischenablage\\
+fquit & Schließt das Programm\\
+\rowcolor{Gray}
+fnew & Erstellt ein neues Dokument\\
+fopen & Öffnet den Datei-Auswahldialog um eine Datei zu Laden\\
+\rowcolor{Gray}
+fsave & Speichert das Dokument, wenn es bereits vorher gespeichert wurde\\
+fsaveas & Öffnet den Datei-Auswahldialog um das Dokument zu speichern\\
+\rowcolor{Gray}
+sreset & Setzt Programmzähler und Inhalte von Registern und Bussen wieder\\
+ & auf die Initialwerte\\
+ \rowcolor{Gray}
+sstep & Führt den nächsten parallelen Anweisungsblock aus\\
+smicro & Führt die nächste Anweisung innerhalb einer parallelen
+Anweisungs- \\
+\rowcolor{Gray}
+ & sequenz oder die erste der nächsten parallelen Anweisungssequenz aus\\
+srun & Führt das Programm aus, bis es terminiert oder unterbrochen wird\\
+\rowcolor{Gray}
+sbreak & Öffnet das Breakpoint-Fenster (Abschnitt 8: Breakpoint-Fenster)\\%smemres & Löscht den Inhalt aller deklarierten Speicher\\
+\rowcolor{Gray}
+slogres & Löscht den Inhalt des Logfensters. (Abschnitt 9: Das Logfenster)\\
+hindex & Zeigt die Hilfeseiten von RTeasy an\\
+\rowcolor{Gray}
+habout & Zeigt Informationen über das Programm an\\
+epretty & Dieses Kommando versucht das Programm zu kompilieren. Ist dies\\
+\rowcolor{Gray}
+ & erfolgreich,  dann wird das Programm in eine einheitliche und \\
+ & übersichliche Struktur gebracht\\
+\rowcolor{Gray}
+dshowsig & Die benötigten Kontrollsignale werden berechnet\\
+dexppipe & Das Programm wird in ein Low-Level-Modell übersetzt\\
+\rowcolor{Gray}
+esettings & öffnet das Fenster, indem alle Einstellungen zu RTeasy\\
+ & vorgenommen werden können\\
+\hline
+\end{tabular}
+\end{table}
+
+\subsubsection{Entwurf}$~~$
+\begin{figure}[h]
+\includegraphics{Entwurf2.JPG}
+\caption{Entwurf}
+\end{figure}
+\paragraph{4.1.3.1 Signale zeigen}$~~$\\
+Die Funktion 'Signale zeigen' errechnet aus einem eingegebenen Programm die
+Kontrollsignale eines daraus resultierenden Operationswerks.
+Die Kontrollsignale werden in einem neuen Fenster aufgelistet. Über die
+Schaltfläche \includegraphics[width=0.8cm]{Button.JPG} Schliessen kann dieses
+Fenster wieder geschlossen werden.
+\begin{figure}[h]
+\includegraphics{Signale.JPG}
+\caption{Signale}
+\end{figure}
+
+\paragraph{4.1.3.2 Low-Level-Modell ableiten}$~~$\\
+Diese Funktion berechnet ein Low-Level-Modell aus dem gegebenen Programm. Dazu
+werden vor allem parallele Anweisungen, die mit dem Pipe-Operator
+gekennzeichnet wurden, in sequenzielle Anweisungen überführt.
+\begin{figure}[h]
+\includegraphics[width=13.7cm]{LLM.JPG}
+\caption{Low-Level-Modell eines einfachen Shift-Programms}
+\end{figure}
+
+\paragraph{4.1.3.3 VHDL-Modell}$~$\\
+Mit diesem Menüpunkt wird ein VHDL-Modell des eingegebenen RTeasy-Programms
+generiert. Das RTeasy-Programm muss dabei lauffähig sein. Eine Fehlermeldung
+weist auf eventuell vorhandene Programmfehler hin, die behoben werden müssen, bevor
+ein VHDL-Modell generiert werden kann.\\
+Es sei darauf hingewiesen, dass der generierte VHDL-Code maschinell erzeugt
+wird. Das kann zu redundanten Programmteilen und kleineren Fehlern führen. Es
+ist daher empfehlenswert, den VHDL-Code auf eventuelle Fehler zu prüfen.
+
+\subsubsection{Hilfemenü}
+\begin{itemize}
+  \item Hilfe. Zeigt die Hilfeseiten von RTeasy an.
+  \item Über. Zeigt Informationen über das Programm an.
+\end{itemize}
+\newpage
+
+\section{Editorfenster}
+\begin{figure}[h]
+\includegraphics[width=14.5cm]{Editorfenster.JPG}
+\caption{Editorfenster}
+\end{figure}
+
+Das Editorfenster zeigt den aktuellen Quelltext des RT-Programms an. Im
+Editiermodus (Abschnitt 3.1.1: Editiermodus) kann man den Quelltext verändern.
+Im Simulationsmodus (Abschnitt 3.1.2: Simulationsmodus) zeigt das Fenster die
+zuletzt ausgeführte Anweisung an. Im Simulationsmodus kann der Quelltext nicht
+verändert werden.
+
+\subsection{Im Editiermodus}
+
+Der Editor funktioniert wie jeder beliebige Texteditor unter Windows und erlaubt 
+Markieren, Cut, Copy und Paste. Text kann wie
+gewohnt bei gedrückter linker Maustaste markiert werden, und dann durch
+Menü->Bearbeiten->Kopieren oder Strg+C in die Zwischenablage kopiert werden.
+Analog kann der markierte Text auch ausgeschnitten werden (Strg+X). Text kann
+auch nur mit der Tastatur markiert werden: Shift gedrückt halten und die
+Richtungstasten (Pfeile, Bild hoch/runter) zum Auswählen der Markierung
+verwenden. Bei Hinzunahme von Strg wird in Schritten von ganzen Wörtern
+markiert. Der markierte Text kann dann an beliebiger Stelle im Programm wieder
+eingefügt werden (Strg+V). Die Markierung kann durch Drücken einer Pfeiltaste
+aufgehoben werden.
+\begin{table}
+\caption{Tastenbelegungen}
+\begin{tabular}[ht]{ll}
+\hline Taste(n) & Bedeutung \\\hline
+\rowcolor{Gray}
+\hline
+Pos1 & An den Zeilenanfang springen \\
+Ende & An das Zeilenende springen \\
+\rowcolor{Gray}
+Strg + Pos1 & An den Programmanfang springen \\
+Strg + Ende & An das Programmende springen \\
+\rowcolor{Gray}
+Tabulator & Spezialzeichen, bewirkt Einrücken um 8 Zeichen, zählt aber\\
+& nur als eines \\
+\rowcolor{Gray}
+Bild hoch/Bild runter & Seitenweise durch den Programmtext scrollen \\
+Shift + Pfeiltasten & Markiermodus \\
+\rowcolor{Gray}
+Strg + A & Alles markieren \\
+Strg + C & Markierten Text kopieren \\
+\rowcolor{Gray}
+Strg + X & Markierten Text ausschneiden \\
+Strg + V & Aus Zwischenablage einfügen \\
+\hline
+\end{tabular}
+\end{table}
+Der Editor wurde mit der Java-Klasse JTextArea implementiert, weitere
+Tastenbelegungen finden sich hier.
+
+\subsection{Im Simulationsmodus}
+Wird ein RT-Programm simuliert, werden die zuletzt ausgeführten Anweisungen
+farblich markiert.
+\begin{table}[h]
+\caption{Farbmarkierungen}
+\begin{tabular}{ll}
+\hline Farbe & Beschreibung \\\hline
+\rowcolor{Gray}
+\hline
+\colorbox{lightblue}{ }Block & Zuletzt ausgeführter Anweisungsblock (Step) \\
+\colorbox{yellow}{ }Anweisung & Zuletzt ausgeführte Anweisung (Microstep) \\
+\rowcolor{Gray}
+\colorbox{green}{ }Vergleich & Ein Vergleich einer if-Anweisung, der wahr ist
+(Microstep) \\
+\colorbox{red}{ }Vergleich & Ein Vergleich einer if-Anweisung, der falsch ist
+(Microstep) \\
+\rowcolor{Gray}
+\colorbox{lightblue}{ }Block & Anweisungsblock, bei dem die Programmausführung
+abgebrochen \\
+& wurde \\
+\rowcolor{Gray}
+\colorbox{orange}{ }Block & Derzeit ausgewählter Breakpoint \\
+\hline
+\end{tabular}
+\end{table}
+\newpage
+
+\section{Simulationsstatusfenster}
+\begin{figure}[h]
+\includegraphics{Simustatus.JPG}
+\caption{Simulationsstatus}
+\end{figure}
+
+Das Simulationsstatusfenster wird nur während der Simulation (Abschnitt 3.1.2:
+Simulationsmodus) angezeigt. In diesem Fenster befinden sich alle Informationen
+zu Registern, Bussen, Speichern, Registerarrays und dem Zustands- und
+Programmzähler.
+
+\begin{figure}[h]
+\includegraphics{Zustand.JPG}
+\caption{Zustands- und Programmzähler}
+\end{figure}
+
+Hier werden der zuletzt ausgeführte Zustand sowie die Anzahl der vergangenen
+Takte angezeigt.
+
+\begin{figure}[h]
+\includegraphics[width=6.5cm]{RegBus.JPG}
+\caption{Register und Busse}
+\end{figure}
+
+Hier werden die Inhalte von Registern und Bussen angezeigt. Diese
+\colorbox{yellow}{Farbe} signalisiert dass der Wert eines Registers bzw. eines
+Busses im letzten Schritt verändert wurde. Mit einem Mausklick auf den Wert des
+Registers kann man diesen verändern. Der Wert wird erst übernommen, wenn der 
+Wert mit der ENTER-Taste oder mit einem Klick außerhalb des Feldes
+bestätigt wird. Mit ESC wird der eingegebene Wert verworfen Die dritte Spalte
+zeigt an, mit welcher Basis die Werte  angezeigt und gesetzt werden.
+
+\begin{table}[h]
+\caption{Basisdarstellung}
+\begin{tabular}{ccll}
+\hline Wert & Basis & Eingabezeichen & Bedeutung \\\hline
+\rowcolor{Gray}
+\hline
+BIN & 2 & 0,1 & Binärdarstellung \\
+DEC & 10 & 0,\ldots,9 & Dezimaldarstellung ohne Vorzeichen \\
+\rowcolor{Gray}
+HEX	& 16 & 0,\ldots,9,A,\ldots,F & Hexadezimaldarstellung ohne Vorzeichen\\
+DEC2 & 10 & 0,\ldots9 & Dezimaldarstellung mit Vorzeichen \\
+\rowcolor{Gray}
+HEX2 & 16 & 0,\ldots9,A\ldots,F & Hexadezimaldarstellung mit Vorzeichen \\
+\hline
+\end{tabular}
+\end{table}
+
+\includegraphics[width=0.5cm]{Hinweis.JPG} Eingaben, die die Bitbreite des
+Busses/Registers übersteigen, werden von links abgeschnitten.
+\begin{figure}[h]
+\includegraphics{Speicher.JPG}
+\caption{Speicher}
+\end{figure}
+
+Zu jedem deklarierten Speicher wird eine Schaltfläche angezeigt, mit der man
+das Fenster für den jeweiligen Speicher anzeigen lassen kann. (Abschnitt 6:
+Speicher)
+\begin{figure}[h]
+\includegraphics{RegArray.JPG}
+\caption{Registerarrays}
+\end{figure}
+
+Ebenfalls zu jedem deklarierten Registerarray ist eine Schaltfläche vorhanden,
+die das zugehörige Fenster öffnet, um den Inhalt zu verwalten (Abschnitt 8:
+Registerarrays).
+\newpage
+
+\section{Speicher}
+\begin{figure}[ht]
+\includegraphics{Speicherinhalt.JPG}
+\caption{Speicherinhalt}
+\end{figure}
+
+Dieses Fenster zeigt den Inhalt eines deklarierten Speichers an. Mittels
+Mausklick auf das Feld Inhalt an der entsprechenden Adressposition kann man den
+Wert an dieser Adresse verändern. Die Eingabewerte für die entsprechende Basis
+entsprechen denen des Simulationsfensters.
+\begin{itemize}
+  \item \includegraphics[width=0.8cm]{Button.JPG} Basis. Hier kann man die
+  Basis für Ein- und Ausgabe des Inhalts angeben. Die Adresswerte sind immer
+  hexadezimal (Tabelle 3: Basisdarstellung).
+  \item \includegraphics[width=0.8cm]{Button.JPG} Go to. Springt zu der
+  eingegebenen Adresse (hexadezimal).
+  \item \includegraphics[width=0.8cm]{Button.JPG} Reset. Setzt alle Werte dieses
+  Speichers zurück auf die Initialwerte.
+  \item \includegraphics[width=0.8cm]{Button.JPG} Laden. Lädt den Speicherinhalt
+  aus einer Datei.
+  \item \includegraphics[width=0.8cm]{Button.JPG} Speichern. Speichert den
+  Speicherinhalt in eine Datei.
+\end{itemize}
+
+\includegraphics[width=0.5cm]{Hinweis.JPG} Für den korrekten Aufbau eines
+solchen Speicherabbilds schauen Sie sich bitte die Grammatik in der
+Dokumentation an.
+\newpage
+
+\section{Registerarray}
+\begin{figure}[h]
+\includegraphics{RegArrayFenster.JPG}
+\caption{Inhalt des Registerarrays}
+\end{figure}
+
+Dieses Fenster zeigt den Inhalt eines deklarierten Registerarrays an. Die erste
+Spalte enthält die Position der einzelnen Register. In der zweiten Spalte wird
+der jeweilige Registerinhalt angezeigt. Mittels Mausklick lässt sich der
+jeweilige Inhalt auswählen und verändern. Die Eingabewerte für die
+eingestellte Basis entsprechen denen des Simulationsfensters und lassen sich
+je nach Position in Spalte drei einstellen. Oberhalb der Einträge ist die 
+Adresse des Registers, das gerade beschrieben wird, angegeben.
+
+\begin{figure}[h]
+\includegraphics{RegArrayRef.JPG}
+\caption{Referenzregister}
+\end{figure}
+
+Je nach Position des Zeigers wird die entsprechende Zeile des
+Registerarrays
+\colorbox{green}{farbig} hervorgehoben. Änderungen des Zeigers werden
+erst im nächsten Takt wirksam.
+\begin{itemize}
+  \item \includegraphics[width=0.8cm]{Button.JPG} Übernehmen. Wird der Inhalt
+  eines Registers manuell verändert, werden die Änderungen durch betätigen der
+  Schaltfläche wirksam (das Drücken der ENTER-Taste hat den gleichen Effekt).
+\end{itemize}
+
+\section{Breakpoint-Fenster}
+\begin{figure}[h]
+\includegraphics{Breakpoint.JPG}
+\caption{Breakpoints}
+\end{figure}
+
+Das Breakpointfenster zeigt die Haltepunkte, an denen die Ausführung des RT-
+Programms gestoppt wird.
+
+\begin{itemize}
+  \item \includegraphics[width=0.8cm]{Button.JPG} Hinzufügen. Fügt einen
+  Breakpoint hinzu. Dazu klicken Sie auf Hinzufügen, und dann auf den
+  Anweisungsblock im Editor, an dem Sie den Haltepunkt setzen wollen. Die
+  Zustandsnummer wird im Breakpoint-Fenster hinzugefügt und der Zustand wird
+  farblich markiert. (Abschnitt 4.2: Im Simulationsmodus)
+  \item \includegraphics[width=0.8cm]{Button.JPG} Löschen. Löscht den im
+  Breakpoint-Fenster markierten Haltepunkt.
+  \item \includegraphics[width=0.8cm]{Button.JPG} Markierung setzen. Ein
+  Mausklick auf den Haltepunkt markiert den Anweisungsblock im Editor.
+  \item \includegraphics[width=0.8cm]{Button.JPG} Markierung aufheben. Diese
+  Schaltfläche löscht die farbliche Kennzeichnung im Editorfenster.
+\end{itemize}
+\newpage
+
+\section{Das Logfenster}
+\begin{figure}[h]
+\includegraphics[width=14.5cm]{Log.JPG}
+\caption{Das Logfenster}
+\end{figure}
+
+In diesem Fenster erscheinen alle Fehler und Warnungen, die während des
+Kompilierens und Ausführens auftreten. Die Schaltfläche
+\includegraphics[width=0.8cm]{Button.JPG} Löschen löscht alle bisherigen
+Ausgaben.
+\newpage
+
+\section{Anwendungsbeispiele}
+\subsection*{10.1 Easy-Multiplier}
+\subsubsection*{10.1.1 Aufgabenstellung}
+Es soll ein einfaches Multiplizierwerk für zwei ganzzahlige, positive
+Festpunktzahlen entworfen werden.\\
+Die beiden Faktoren sollen über einen Bus eingelesen werden. Das Ergebnis soll
+über einen Bus ausgegeben werden. Beide Faktoren dürfen dabei nicht größer als
+255 werden.
+\subsubsection*{10.1.2 Flussdiagramm}
+Das nachfolgende Flussdiagramm soll die Idee der Lösung verdeutlichen.
+FAKTOR und A sind die beiden Faktoren, die vom Bus gelesen werden.
+ERG ist das Ergebnisregister.
+\begin{figure}[h]
+\flushleft
+\includegraphics{Diag.JPG}
+\caption{Flussdiagramm}
+\end{figure}
+
+\subsubsection*{10.1.3 Programmentwurf}
+Man öffne ein neues Programm, indem man wie in Abschnitt 3.1.1.1 Dateimenü
+beschrieben, in der Menüleiste das Menü 'Datei' und dort den Punkt 'Neu'
+auswählt. Jetzt kann der im folgenden erarbeitete Programmcode in den Editor
+eingetragen werden.
+Im Flussdiagramm hat sich schon gezeigt, dass die Register A, FAKTOR und
+ERG benötigt werden. Da die Faktoren maximal 255 sind, reichen zwei 8-Bit
+Register, sowie ein 16-Bit Ergebnisregister:\newline
+\newline
+\texttt{declare register A(0:7), FAKTOR(0:7), ERG(0:15)}
+\newline
+\newline
+Als Busse werden ein Inbus und ein Outbus benötigt, wobei der Inbus die Größe
+der Faktoren hat (8-Bit) und der Outbus die Größe des Ergebnisses
+(16-Bit):\newline
+\newline
+\texttt{declare bus INBUS(0:7), OUTBUS(0:15)}
+\newline
+\newline
+Das Programm startet am besten mit der Initialisierung der Register,
+wobei das Label 'BEGIN' hier nur der Übersicht halber angegeben wird:\newline
+\newline
+\texttt{BEGIN: \\ A <- INBUS, ERG <- 0;\\ FAKTOR <- INBUS;}
+\newline
+\newline
+Es folgt eine Schleife, die überprüft, ob der Wert in FAKTOR gleich Null ist.
+Wenn ja, wird das Ergebis auf den OUTBUS geschrieben, wenn nicht, wird FAKTOR
+dekrementiert und der Wert aus A auf ERG aufaddiert:
+\newline
+\newline
+\texttt{LOOP:\\ if FAKTOR = 0 then OUTBUS <- ERG\\ else\\   ERG <- ERG + A,\\  
+FAKTOR <- FAKTOR - 1,\\ goto LOOP fi;}
+\newpage
+Das Programm sollte in etwa wie folgt aussehen:
+\begin{figure}[h]
+\includegraphics[width=14.5cm]{Example.JPG}
+\caption{Das Logfenster}
+\end{figure}
+
+\subsubsection*{10.1.4 Simulation}
+Zunächst wechselt man (wie in Abschnitt 3.1.2 Simulationsmodus beschrieben) in
+den Simulationsmodus. Sollten im Logfenster (Abschnitt 9: Das Logfenster)
+Fehler ausgegeben werden, so muss überprüft werden, ob der Programmtext dem
+Beispiel aus Abschnitt 10.3 entspricht.\newline
+Werden keine Fehler gefunden, so wird in den Simulationsmodus gewechselt.
+Zuerst wird im neu geöffneten Simulationsstatus-Fenster (siehe Abschnitt 5) der
+erste Faktor der Multiplikation in den INBUS geschrieben, indem man durch einen
+Doppelklick auf den Inhalt des Busses den Zellinhalt verändert.\newline
+Klickt man jetzt auf \includegraphics[width=0.8cm]{Button.JPG} Step sollte der
+Inhalt aus INBUS im Register A erscheinen.\newline
+Jetzt kann der zweite Faktor, wie oben beschrieben, in den INBUS geschrieben
+werden und durch erneutes klicken auf
+\includegraphics[width=0.8cm]{Button.JPG} Step in FAKTOR übertragen
+werden.\newline
+Mit diesen Werten kann jetzt das Programm durch Klicken auf
+\includegraphics[width=0.8cm]{Button.JPG} Run durchlaufen werden. Nach
+abgeschlossener Berechnung steht das Ergebnis der Multiplikation im OUTBUS.\\
+Möchte man der Multiplikation im Einzelnen folgen, so kann man über das Klicken
+von \includegraphics[width=0.8cm]{Button.JPG} Step oder
+\includegraphics[width=0.8cm]{Button.JPG} Microstep jeden Programmschritt
+nachverfolgen.\newline
+Man kann jetzt über \includegraphics[width=0.8cm]{Button.JPG} Reset das Programm
+zurücksetzen und eine weitere Simulation mit neuen Werten ausprobieren.
+Für Änderungen am Programmtext gelangt man über
+\includegraphics[width=0.8cm]{Button.JPG} Bearbeiten zurück in den Editiermodus.
+\newline
+\newline
+Dieses Beispiel ist bereits neben vielen weiteren Beispielen unter dem
+Menüpunkt 'Beispiele' der Menüleiste unter dem Namen 'Easy-Multiplier'
+vorhanden.
+\newpage
+\subsection*{10.2 Register-Register-Maschine}
+\subsubsection*{10.2.1 Aufgabenstellung}
+\begin{figure}[h]
+\includegraphics[width=13cm]{RegReg-1.pdf}
+\caption{Blockschaltbild eines Prozessors nach dem Register-Register-Prinzip}
+\end{figure}
+Anhand des obigen Blockschaltbildes soll ein einfacher Prozessor realisiert
+werden. Dazu soll ein Registerarray zur Verwaltung der 8 Bit großen Quell- und
+Zielregister verwendet werden. Über den dargestellten Datenpfad werden
+Instruktionen und Daten aus dem Speicher in das Instruktionsregister \textit{IR}
+geladen. Das Befehlsformat ist wie folgt vorgegeben:
+\begin{figure}[h]
+\includegraphics[width=4.5cm]{RegReg-2.JPG}
+\caption{Befehlsformat}
+\end{figure}
+\newline
+Jeder Befehl besteht aus mindestens einem Byte. Bei Sprungbefehlen kommt ein
+zweites Byte mit der Zieladresse hinzu. Die Quell- und Zielregister des
+Registerarrays \textit{Rm} und \textit{Rn} werden über zwei 2 Bit breite Zahlen
+angegeben. Eine 4 Bit breite Zahl codiert den auszuführenden Befehl.
+Der Prozessor verfügt über folgende Befehle für vorzeichenlose Zahlen:
+\begin{table}[h]
+\caption{Prozessorbefehle}
+\begin{tabular}{lcl}
+\hline Befehl & OpCode & Funktion \\ \hline
+\hline
+\rowcolor{Gray}
+\hline
+ADD \textit{Rm}, \textit{Rn} & 001 & Addiert \textit{Rm} und \textit{Rn},
+Ergebnis in \textit{Rm}\\
+SHL \textit{Rm} & 010 & Schiebt \textit{Rm} um ein Bit nach links und zieht
+eine 0 nach \\
+\rowcolor{Gray}
+LOAD \textit{Rm}& 011 & Lädt \textit{Rm} mit dem durch \textit{R3} bezeichneten
+Speicherinhalt\\
+STORE \textit{Rm} & 100 & Schreibt \textit{Rm} an die in \textit{R3} bezeichnete
+Speicherstelle\\
+\rowcolor{Gray}
+JMP address & 101 & Setzt den Programmablauf an \textit{address} fort \\
+BREQ address & 110 & Setzt den Programmablauf an \textit{address} fort, wenn
+das\\
+\rowcolor{Gray}
+& & Ergebnis der letzten Operation 0 gewesen ist\\
+\hline
+\end{tabular}
+\end{table}
+\newpage
+Die Arithmetisch-Logische-Einheit (ALU) berücksichtigt keine Überläufe, das
+heißt es werden in diesem Fall nur die unteren 8 Bit des Ergebnisses
+ausgegeben. Um den Befehl BREQ einfacher durchführen zu können, besitzt die ALU
+ein zusätzliches flag Z, das den Wert 1 annimmt, wenn das Ergebnis der
+letzten Operation 0 war. Andernfalls ist Z auf 0.
+\subsubsection*{10.2.2 Programmentwurf}
+Als erstes kann man am Blockschaltbild ablesen, welche Register, Speicher und
+Registerarrays benötigt werden:\newline
+\texttt{declare register IR(7:0), AR(7:0), DR(7:0), PC(7:0), Z}\newline 
+\texttt{declare register array R(7:0)[4]} \newline
+\texttt{declare memory MEM(AR, DR)} \newline
+\newline
+Als nächstes sollten die Register mit 0 initialisiert werden, von denen zu
+Beginn gelesen wird. Da man als erstes einen Befehl aus dem Speicher liest,
+sollten \textit{PC} und \textit{AR} initialisiert werden. Das kann der Übersicht
+ halber unter einem Label INIT geschehen: \newline
+\texttt{INIT: PC <- 0, AR <- 0;}\newline
+\newline
+Die Deklaration und Initialisierung ist abgeschlossen und es folgt der erste
+Programmschritt, das Holen von Befehlen aus dem Speicher, wobei das Erhöhen 
+des Programmzählers \textit{PC} schon auf den nächsten Befehl vorbereitet:\newline
+\texttt{FETCH: AR <- PC;} \\
+\noindent\hspace*{14mm}\texttt{PC <- PC + 1, read MEM;} \\
+\newline
+Nun muss der Befehl nach \textit{IR}, wo er verarbeitet wird.
+Hierzu wird eine Switch-Case-Schleife verwendet, die die oberen 4 Bit des in 
+\textit{IR} abgelegten Befehls auf die Werte 0 bis 6 vergleicht und bei
+Übereinstimmung an das Label springt, wo der jeweilige Befehl ausgeführt wird:
+\newline
+\texttt{IR <- DR | switch IR(7:4) \{ }
+\newline
+\texttt{   case 0: goto FETCH}\newline
+\texttt{   case 1: goto ADD}\newline
+\texttt{   case 2: goto SHL}\newline
+\texttt{   case 3: goto LOAD}\newline
+\texttt{   case 4: goto STORE}\newline
+\texttt{   case 5: goto JMP}\newline
+\texttt{   case 6: goto BREQ}\newline
+\texttt{   default: goto END  \};}\newline
+\newline
+Es folgen die Befehlsausführungen:\newline
+\newline
+\# Add: Addiere \textit{Rn} und \textit{Rm} und schreibe das
+Ergebnis nach \textit{Rm}\newline
+\texttt{ADD: R[IR(3:2)] <- R[IR(3:2)] + R[IR(1:0)]} \\
+\noindent\hspace*{10mm}\# ist das Ergebnis 0, dann setze \textit{Z}\newline
+\noindent\hspace*{10mm}\# sonst setze \textit{Z} zurück auf 0 und hole den
+nächsten Befehl\newline
+\noindent\hspace*{10mm}\texttt{if R[IR(3:2)] = 0 then Z <- 1 else Z <- 0 fi, goto FETCH;}\newline
+\newline
+\# Shift: Schiebe das Register \textit{Rm} um 1 Bit
+nach links und ziehe eine 0 nach\newline
+\texttt{SHL: R(7:1)[IR(3:2)] <- R(6:0)[IR(3:2)];}\newline
+\noindent\hspace*{10mm}\texttt{ R(0)[IR(3:2)] <- 0;}\\
+\noindent\hspace*{10mm}\# setze \textit{Z} wie bei ADD beschrieben\newline
+\noindent\hspace*{10mm}\texttt{if R[IR(3:2)] = 0 then Z <- 1 else Z <- 0 fi, goto FETCH;}
+\newline
+\newline
+\# Load: Schreibe den Inhalt des dritten(letzen) Registers des
+Arrays in das Adressregister\\
+\texttt{LOAD: AR <- R[3];}\newline
+\noindent\hspace*{10mm}\# lade aus dem Speicher\newline
+\noindent\hspace*{10mm}\texttt{read MEM;}\newline
+\noindent\hspace*{10mm}\# lege den Speicherinhalt im Array ab und hole den
+nächsten Befehl\newline
+\noindent\hspace*{10mm}\texttt{R[IR(3:2)] <- DR, goto FETCH;}\newline
+\newline
+\# Store: Schreibe den Inhalt des dritten(letzen) Registers des
+Arrays in das Adressregister und schreibe \textit{Rm} ins Datenregister \newline
+\texttt{STORE: AR <- R[3], DR <- R[IR(3:2)];}\newline
+\noindent\hspace*{10mm}\# schreibe die Daten in den Speicher und hole den
+nächsten Befehl\newline
+\noindent\hspace*{10mm}\texttt{write MEM, goto FETCH;}\newline
+\newline
+\# Jump: hole die Sprungadresse aus dem Speicher\newline
+\texttt{JMP: read MEM;}\newline
+\noindent\hspace*{10mm}\# setze \textit{PC} auf diese Adresse und hole den
+nächsten Befehl\newline
+\noindent\hspace*{10mm}\texttt{PC <- DR | goto FETCH;}\newline
+\newline\# Branch: ist Z gesetzt dann führe einen Sprung aus (JMP)\newline
+\texttt{BREQ: if Z=1 then goto JMP}\newline
+\noindent\hspace*{10mm}\# sonst: gehe normal im Programm weiter\newline
+\noindent\hspace*{10mm}\texttt{else goto FETCH fi;}\newline
+\newline
+\# End: treten undefinierte Befehle auf, endet das Programm hier\newline
+\texttt{END: nop;}\newline
+\newline
+Damit ist der Programmcode fertig und kann jetzt simuliert werden.
+\subsubsection*{10.2.3 Simulation}
+Um das Programm zu simulieren, ist ein Speicherinhalt nötig, der mithilfe einer
+Beispielsequenz Befehle testet. Folgender Speicherinhalt sollte nach Start der
+Simulation (Abschnitt 3.1.2: Simulationsmodus) geladen werden:
+\begin{figure}[h]
+\includegraphics[width=8cm]{RegArrEx.JPG}
+\caption{Speicherinhalt für Register-Array-Beispiel}
+\end{figure}
+\newpage
+Der Speicherinhalt sollte folgende Auswirkung haben:
+\begin{table}[h]
+\caption{Auswirkung der Beispielsequenz}
+\begin{tabular}{clcc}
+\hline Adresse & Beschreibung & Rm & Rn \\ \hline
+\hline
+\rowcolor{Gray}
+\hline
+0 & Lade den Wert an Adresse 0 in Registerarray an & 01000000 & x\\
+& Position 0&&\\
+\rowcolor{Gray}
+1 & Addiere Register an Position 0 und an Position 1 & 01000000 & 01000000\\
+2 & Schiebe Register an Position 1 um 1 Bit nach links& 10000000 & x\\
+\rowcolor{Gray}
+3 & Schreibe den Wert aus Register 2 an den Speicher-& 00000000 & x\\
+&platz mit der Adresse aus Register 3&&\\
+\rowcolor{Gray}
+4 & Springe an Wert aus nächster Adresse & x & x\\
+5 & Das ist die Adresse an die gesprungen wird, also 1 & x & x\\
+\rowcolor{Gray}
+6 & (sollte nicht erreicht werden!)Ist Z=1 springe an&x&x\\
+& Wert aus Adresse 7 &&\\
+\rowcolor{Gray}
+7 & Das ist die Adresse an die gesprungen wird, also 0 & x & x\\
+\hline
+\end{tabular}
+\end{table}\newline
+
+\newpage
+\nocite{Schendel2004}
+\nocite{Schendel2004a}
+\bibliography{literatur}
+\bibliographystyle{plain}
+
+\section*{Projektteam}
+\begin{itemize}
+  \item Prof. Dr.-Ing. Erik Maehle
+  \item Dipl.-Inf. Carsten Albrecht
+  \item Hagen Schendel
+  \item Torben Schneider
+  \item Carina Hauft
+\end{itemize}
+
+\end{document}
