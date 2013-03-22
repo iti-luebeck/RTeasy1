@@ -103,10 +103,13 @@ import de.uniluebeck.iti.rteasy.kernel.RTProgram;
 import de.uniluebeck.iti.rteasy.kernel.RTSim_SemAna;
 import de.uniluebeck.iti.rteasy.kernel.RegisterArray;
 import de.uniluebeck.iti.rteasy.kernel.Statement;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Properties;
 
 public abstract class RTSimWindow extends JFrame implements ActionListener {
 
-	private final static String version = "0.3.4";
+	private static String version;
 
 	private boolean filenameEndsWithRt(String filename) {
 		return filename.endsWith(".rt") || filename.endsWith(".RT")
@@ -364,7 +367,16 @@ public abstract class RTSimWindow extends JFrame implements ActionListener {
 	RTSimWindow() {
 		super("RTeasy");
 		Locale.setDefault(IUI.getLocale());
-		checkJavaVersion(this);
+                checkJavaVersion(this);
+                
+                try {
+                Properties prop = new Properties();
+                prop.load(RTSimWindow.class.getResourceAsStream("/version.properties"));
+                version = prop.getProperty("rteasy.version");
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+                
 		RTOptions.loadOptions();
 		IUI.init(RTOptions.locale);
 		RTSimGlobals.init();

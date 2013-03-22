@@ -45,7 +45,7 @@ public class IUI {
 
   public static void init(Locale l) {
     try{
-      bundle = ResourceBundle.getBundle("res/langpack",l);
+      bundle = ResourceBundle.getBundle("langpack",l);
     }
     catch(Throwable t) {
       System.err.println(t.getMessage());
