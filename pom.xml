@@ -4,7 +4,7 @@
 
     <groupId>de.uniluebeck.iti</groupId>
     <artifactId>RTeasy</artifactId>
-    <version>0.4.0</version>
+    <version>0.3.6</version>
     <packaging>jar</packaging>
 
     <name>RTeasy</name>
@@ -57,6 +57,27 @@
                     </archive>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-patch-plugin</artifactId>
+                <version>1.1.1</version>
+                <configuration>
+                    <targetDirectory>${basedir}/target</targetDirectory>
+                    <patches>
+                        <patch>SimpleCharStream.java.patch</patch>
+                    </patches>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>patch</id>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>apply</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>    
 

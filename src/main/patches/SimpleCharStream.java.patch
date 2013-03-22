@@ -1,0 +1,18 @@
+diff -ur generated-sources/javacc/de/uniluebeck/iti/rteasy/frontend/SimpleCharStream.java generated-sources.patched/javacc/de/uniluebeck/iti/rteasy/frontend/SimpleCharStream.java
+--- generated-sources/javacc/de/uniluebeck/iti/rteasy/frontend/SimpleCharStream.java	2013-03-21 23:38:19.221145837 +0100
++++ generated-sources/javacc/de/uniluebeck/iti/rteasy/frontend/SimpleCharStream.java	2013-03-22 14:43:11.237092093 +0100
+@@ -167,10 +167,10 @@
+       case '\n' :
+         prevCharIsLF = true;
+         break;
+-      case '\t' :
+-        column--;
+-        column += (tabSize - (column % tabSize));
+-        break;
++//      case '\t' :
++//        column--;
++//        column += (tabSize - (column % tabSize));
++//        break;
+       default :
+         break;
+     }
