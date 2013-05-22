@@ -1,4 +1,4 @@
-% University of Luebeck - RTeasy Version 0.3.4 %
+% University of Luebeck - RTeasy Version 0.3.6 %
 #Mult2c_5-32
 declare register	A(0:7), M(0:7), Q(0:7), COUNT(0:2), F
 declare bus		INBUS(0:7), OUTBUS(0:7)

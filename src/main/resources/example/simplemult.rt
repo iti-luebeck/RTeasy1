@@ -1,4 +1,4 @@
-% University of Luebeck - RTeasy Version 0.3.4 %
+% University of Luebeck - RTeasy Version 0.3.6 %
 # simple shift multiplier
 
 declare in bus RUN, INBUS(15:0);
