@@ -1375,15 +1375,10 @@ public abstract class RTSimWindow extends JFrame implements ActionListener {
 	}
 
 	public void openLogFrame() {
-		Dimension max = this.getSize();
-		int top = getContentPane().getHeight();
-		int width = (int) (max.width / 1.5);
-		int height = (max.height / 4);
-		int loc = max.height - top - height - (height / 2);
 		logFrame = new JInternalFrame(IUI.get("TITLE_LOG"), true, false, true,
 				true);
-		logFrame.setSize(width, height);
-		logFrame.setLocation(0, loc);
+		logFrame.setSize(500, 100);
+		logFrame.setLocation(0, 0);
 		logArea = new JTextArea();
 		logArea.setLineWrap(true);
 		logArea.setWrapStyleWord(true);
