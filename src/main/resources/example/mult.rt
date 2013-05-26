@@ -1,4 +1,4 @@
-% University of Luebeck - RTeasy Version 0.3.6 %
+% University of Luebeck - RTeasy Version 0.3.7 %
 #Multiplier
 declare register        A(0:7), M(0:7), Q(0:7), COUNT(0:2)
 declare bus             INBUS(0:7), OUTBUS(0:7)

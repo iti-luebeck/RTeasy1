@@ -50,10 +50,21 @@ public class RTOptions {
 	public static String design_library = "rteasy";
 	public static Locale locale = new Locale("en", "US");
 
+  public static String getCfgPath() {
+    boolean unix=false;
+    if (File.separatorChar == '/')
+       unix = true;
+    String str = System.getProperty("user.home")
+					+ System.getProperty("file.separator");
+    if (unix)
+        str += ".config/";
+    str += "rteasy.cfg";
+    return str;
+  }
+
 	public static void loadOptions() {
 		try {
-			String propfname = System.getProperty("user.home")
-					+ System.getProperty("file.separator") + "rteasy.cfg";
+			String propfname = getCfgPath();
 			Properties p = new Properties();
 			p.load(new FileInputStream(new File(propfname)));
 			/*
@@ -112,8 +123,7 @@ public class RTOptions {
 	public static void saveOptions() {
 		locale = IUI.getLocale();
 		try {
-			String propfname = System.getProperty("user.home")
-					+ System.getProperty("file.separator") + "rteasy.cfg";
+			String propfname = getCfgPath();
 			Properties p = new Properties();
 			p.put("emitZeroDriver", Boolean.toString(emitZeroDriver));
 			p.put("forceInputs", Boolean.toString(forceInputs));
@@ -121,8 +131,9 @@ public class RTOptions {
 			p.put("locale_Language", locale.getLanguage());
 			p.put("locale_Country", locale.getCountry());
 			p.put("plaf", UIManager.getLookAndFeel().getClass().getName());
-			p.store(new FileOutputStream(new File(propfname)),
-					"RTeasy settings");
+      File f = new File(propfname);
+      f.getParentFile().mkdirs();
+			p.store(new FileOutputStream(f), "RTeasy settings");
 		} catch (Throwable t) {
 		} // doesn't matter
 	}

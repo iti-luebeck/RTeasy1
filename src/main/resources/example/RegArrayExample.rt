@@ -1,4 +1,4 @@
-% University of Luebeck - RTeasy Version 0.3.6 %
+% University of Luebeck - RTeasy Version 0.3.7 %
 #Registerarray-Example
 declare register IR(7:0), AR(7:0), DR(7:0), PC(7:0), Z
 declare register array R(7:0)[4]

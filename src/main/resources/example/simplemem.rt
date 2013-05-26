@@ -1,4 +1,4 @@
-% University of Luebeck - RTeasy Version 0.3.6 %
+% University of Luebeck - RTeasy Version 0.3.7 %
 # simple 64KB memory component
 
 declare in bus ADDR(15:0), DATA_IN(7:0), CE, WE;

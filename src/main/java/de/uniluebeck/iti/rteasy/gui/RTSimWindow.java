@@ -110,6 +110,7 @@ import java.util.Properties;
 public abstract class RTSimWindow extends JFrame implements ActionListener {
 
 	private static String version;
+  private static String headerLine;
 
 	private boolean filenameEndsWithRt(String filename) {
 		return filename.endsWith(".rt") || filename.endsWith(".RT")
@@ -368,15 +369,16 @@ public abstract class RTSimWindow extends JFrame implements ActionListener {
 		super("RTeasy");
 		Locale.setDefault(IUI.getLocale());
                 checkJavaVersion(this);
-                
+
                 try {
                 Properties prop = new Properties();
                 prop.load(RTSimWindow.class.getResourceAsStream("/version.properties"));
                 version = prop.getProperty("rteasy.version");
+                headerLine = "% University of Luebeck - RTeasy Version "+version+" %\n";
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
-                
+
 		RTOptions.loadOptions();
 		IUI.init(RTOptions.locale);
 		RTSimGlobals.init();
@@ -384,9 +386,9 @@ public abstract class RTSimWindow extends JFrame implements ActionListener {
 				.getImage());
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent we) {
-				if (confirmFileClose()) {
-					RTSimWindow.this.exit(0);
-				}
+				if (editorAreaModified && !confirmFileClose())
+          return;
+			  RTSimWindow.this.exit(0);
 			}
 		});
 		this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -679,7 +681,7 @@ public abstract class RTSimWindow extends JFrame implements ActionListener {
 
 	/**
 	 * hier werden Kommandostrings der GUI in Methodenaufrufe umgewandelt
-	 * 
+	 *
 	 * @param e
 	 *            ActionEvent der einen g&uuml;tigen, &uuml;ber
 	 *            e.getActionCommand() abrufbaren Kommandostring enth&auml;t
@@ -696,9 +698,9 @@ public abstract class RTSimWindow extends JFrame implements ActionListener {
 		else if (command.equals("ecut"))
 			editorArea.cut();
 		else if (command.equals("fquit")) {
-			if (confirmFileClose()) {
-				exit(0);
-			}
+			if (editorAreaModified && !confirmFileClose())
+        return;
+      exit(0);
 		} else if (command.equals("fnew"))
 			newFile();
 		else if (command.equals("fopen"))
@@ -781,9 +783,9 @@ public abstract class RTSimWindow extends JFrame implements ActionListener {
 			editorArea.cut();
 			return true;
 		} else if (command.equals("fquit")) {
-			if (confirmFileClose()) {
-				exit(0);
-			}
+			if (editorAreaModified && !confirmFileClose())
+        return false;
+		  exit(0);
 			return true;
 		} else if (command.equals("fnew")) {
 			newFile();
@@ -885,7 +887,7 @@ public abstract class RTSimWindow extends JFrame implements ActionListener {
 
 	/**
 	 * Hier wird das entsprechende Beispiel geladen.
-	 * 
+	 *
 	 * @param examName
 	 *            : Der Name des zu ladenden Beispiels
 	 */
@@ -1223,7 +1225,7 @@ public abstract class RTSimWindow extends JFrame implements ActionListener {
 			editorFrame.setVisible(true);
 			editorArea.read(new InputStreamReader(url.openStream()), null);
 			if (checkHeader(name)) {
-				editorArea.setText(editorArea.getText().substring(49));
+				editorArea.setText(editorArea.getText().substring(headerLine.length()));
 				editorFrame.setTitle(IUI.get("EXAMPLE") + ": " + name);
 				editorFrame.toFront();
 				editorArea.getDocument()
@@ -1241,14 +1243,10 @@ public abstract class RTSimWindow extends JFrame implements ActionListener {
 	}
 
 	private boolean checkHeader(String name) {
-		boolean b = false;
+		boolean b = true;
 		String s = editorArea.getText();
-		if (s.substring(0, 41).equals(
-				"% University of Luebeck - RTeasy Version ")) {
-			b = true;
-			if (!s.substring(41, 46).equals(version)) {
+		if (!s.substring(0, headerLine.length()).equals(headerLine)) {
 				b = false;
-			}
 		}
 		if (!b) {
 			String msg = IUI.get("MSG_LOAD_WARNING")
@@ -1268,8 +1266,10 @@ public abstract class RTSimWindow extends JFrame implements ActionListener {
 			editorArea.read(fr, null);
 			fr.close();
 			if (checkHeader(f.toString())) {
-				editorArea.setText(editorArea.getText().substring(49));
-			}
+				editorArea.setText(editorArea.getText().substring(headerLine.length()));
+			} else {
+        editorArea.setText("#"+editorArea.getText());
+      }
 			editorFrame.setTitle(file.toString());
 			editorFrame.toFront();
 			editorArea.getDocument().addDocumentListener(editorAreaListener);
@@ -1294,7 +1294,6 @@ public abstract class RTSimWindow extends JFrame implements ActionListener {
 		if (result == JFileChooser.CANCEL_OPTION)
 			return;
 		if (readFile(chooser.getSelectedFile())) {
-
 			modeEdit();
 			logArea.setText("");
 		}
@@ -1313,8 +1312,7 @@ public abstract class RTSimWindow extends JFrame implements ActionListener {
 		}
 		try {
 			FileWriter fw = new FileWriter(file);
-			fw.write("% University of Luebeck - RTeasy Version " + version
-					+ "% \n");
+			fw.write(headerLine);
 			fw.write(replaceLineSeps(editorArea.getText()));
 			fw.close();
 			String name = file.toString();
@@ -1339,7 +1337,7 @@ public abstract class RTSimWindow extends JFrame implements ActionListener {
 			file = chooser.getSelectedFile();
 			file = new File(chompRtFilename(file.getCanonicalPath() + ".rt"));
 			FileWriter fw = new FileWriter(file);
-			fw.write("% University of Luebeck - RTeasy Version 0.3.3 % \n");
+			fw.write(headerLine);
 			fw.write(replaceLineSeps(editorArea.getText()));
 			fw.close();
 			editorFrame.setTitle(file.toString());
@@ -1707,7 +1705,7 @@ public abstract class RTSimWindow extends JFrame implements ActionListener {
 
 	/**
 	 * Hier wird die optimale Fenstergr&ouml;&szlig;e ermittelt.
-	 * 
+	 *
 	 * @return Die optimale Position und Gr&ouml;&szlig;e des Hauptfensters
 	 */
 	public Dimension getWindowSize() {
