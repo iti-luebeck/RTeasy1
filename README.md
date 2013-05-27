@@ -9,15 +9,17 @@ How to build
 
 RTeasy uses the [Apache Maven][maven] build system. Simply perform the following steps:
 
-# install maven
+```
+# install build dependencies (java SDK, maven)
 # clone this project
-# run ```mvn install```
+mvn install
+```
 
 How to run
 ----------
 
 RTeasy is packaged as a self-contained Java jar file. You can start it by executing 
-```java -jar RTeasy-VERSION.jar```
+```java -jar target/RTeasy-VERSION.jar```
 
 Developement status
 -------------------
