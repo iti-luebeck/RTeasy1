@@ -39,4 +39,4 @@ It is made open source under the terms of the BSD license.
 
 [maven]:http://maven.apache.org/
 [iti]:http://www.iti.uni-luebeck.de
-[rteasy-github-issues]:https://github.com/itiluebeck/rteasy/issues
+[rteasy-github-issues]:https://github.com/iti-luebeck/rteasy/issues

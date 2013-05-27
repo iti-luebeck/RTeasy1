@@ -8,7 +8,7 @@
     <packaging>jar</packaging>
 
     <name>RTeasy</name>
-    <url>http://github.com/itiluebeck/rteasy</url>
+    <url>https://github.com/iti-luebeck/rteasy</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
