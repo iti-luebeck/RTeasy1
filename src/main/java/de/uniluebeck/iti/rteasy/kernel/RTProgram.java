@@ -857,12 +857,12 @@ public class RTProgram {
     for(Enumeration memElems = memories.elements();memElems.hasMoreElements();)
         ((Memory) memElems.nextElement()).clearWritten();
     pc.commit();
-    initStats();
-    ifStat=false;
-    // erst nach dem initialisieren der Statements Bus-Inhalte loeschen, da
-    // Werte in If-Anweisungen abgefragt werden (Signale)
+
+    // erst Busse clearen
     for(Enumeration busElems = buses.elements();busElems.hasMoreElements();)
         ((Bus) busElems.nextElement()).clear();
+    // dann Branches aufloesen
+    initStats();
   }
 
   /**
@@ -927,10 +927,6 @@ public class RTProgram {
   }
 
   public boolean microStep() {
-	  if(!ifStat) {
-	  initStats();
-	  ifStat=true;
-	  }
     if(terminated()) return true;
     if(!statsIt.hasNext()) {
       if(edgeType == RTSimGlobals.OSTAT_TYPE_2EDGE_1) fetchStatements2();
