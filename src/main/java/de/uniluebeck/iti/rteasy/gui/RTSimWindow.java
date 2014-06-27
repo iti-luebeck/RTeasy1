@@ -103,6 +103,7 @@ import de.uniluebeck.iti.rteasy.kernel.RTProgram;
 import de.uniluebeck.iti.rteasy.kernel.RTSim_SemAna;
 import de.uniluebeck.iti.rteasy.kernel.RegisterArray;
 import de.uniluebeck.iti.rteasy.kernel.Statement;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
@@ -258,7 +259,6 @@ public abstract class RTSimWindow extends JFrame implements ActionListener {
 	}
 
 	protected void modeEdit() {
-
 		mode = M_EDIT;
 		setEditMenuEnabled(true);
 		simuButton.setEnabled(true);
@@ -1104,30 +1104,13 @@ public abstract class RTSimWindow extends JFrame implements ActionListener {
 		};
 		editorArea.getDocument().addDocumentListener(editorAreaListener);
 		numberArea.setText("1");
-		editorArea.addKeyListener(new KeyListener() {
-			public void keyReleased(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					updateNumArea();
-				} else if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
-					updateNumArea();
-				} else if (e.getKeyCode() == KeyEvent.VK_CONTROL) {
-					updateNumArea();
-				}
-			}
-
-			public void keyTyped(KeyEvent e) {
-			}
-
-			public void keyPressed(KeyEvent e) {
-			}
-		});
 		editorPane = new JPanel();
 		editorPane.setBackground(Color.WHITE);
 		// editorPane.setLayout(new FlowLayout(FlowLayout.LEADING,0,0));
 		editorPane.setLayout(new BoxLayout(editorPane, BoxLayout.LINE_AXIS));
 		editorArea.setMinimumSize(new Dimension(600, 400));
 		numberArea.setMinimumSize(new Dimension(10, 400));
-		numberArea.setMaximumSize(new Dimension(10, 1000));
+		numberArea.setMaximumSize(new Dimension(10, 100000000));
 		// editorPane.add(numberArea, BorderLayout.WEST);
 		// editorPane.add(editorArea, BorderLayout.CENTER);
 		editorPane.add(numberArea);
@@ -1730,15 +1713,9 @@ public abstract class RTSimWindow extends JFrame implements ActionListener {
 	public void updateNumArea() {
 		final int docSize = editorArea.getLineCount();
 		numberArea.setText("");
-		for (int i = 1; i < docSize; i++) {
-			if (i < 10) {
-				numberArea.append(i + "\n");
-			} else {
-				numberArea.append(i + "\n");
-			}
+		for (int i = 1; i <= docSize; i++) {
+			numberArea.append(i + "\n");
 		}
-		numberArea.append("" + docSize);
-		numberArea.scrollRectToVisible(editorArea.getVisibleRect());
 	}
 
 	public abstract void exit(int exit_code);
