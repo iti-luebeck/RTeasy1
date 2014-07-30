@@ -55,6 +55,7 @@ public class RTProgram {
   private int regBusCount;
   private ArrayList stats;
   private ListIterator statsIt;
+  private int statsIndex;
   private PositionRange statPos;
   private Statement currentStatement = null;
   private Statement helpStatement = null;
@@ -857,12 +858,10 @@ public class RTProgram {
     for(Enumeration memElems = memories.elements();memElems.hasMoreElements();)
         ((Memory) memElems.nextElement()).clearWritten();
     pc.commit();
-    initStats();
-    ifStat=false;
-    // erst nach dem initialisieren der Statements Bus-Inhalte loeschen, da
-    // Werte in If-Anweisungen abgefragt werden (Signale)
     for(Enumeration busElems = buses.elements();busElems.hasMoreElements();)
         ((Bus) busElems.nextElement()).clear();
+    initStats();
+    statsIndex = 0;
   }
 
   /**
@@ -879,13 +878,12 @@ public class RTProgram {
    */
   public boolean step() {
     if(terminated()) return true;
-    /*if(statSeq.execAt(pc.getStatSeqIndex(),pc.getParStatsIndex())) {
-      cycleChange(); 
-      return true;
-    }
-    else return false; */
     Statement st;
-    while(statsIt.hasNext()) {
+    for(int tmp = 0; tmp < stats.size(); tmp++) {
+        initStats();
+        for(int tmp2 = 0; tmp2 < tmp; tmp2++)
+            statsIt.next();
+        
       st = (Statement) statsIt.next();
       statPos = st.getPositionRange();
       if(!st.exec()) return false;
@@ -927,13 +925,17 @@ public class RTProgram {
   }
 
   public boolean microStep() {
-	  if(!ifStat) {
-	  initStats();
-	  ifStat=true;
-	  }
+      if(edgeType != RTSimGlobals.OSTAT_TYPE_2EDGE_2) {
+        initStats();
+      }
+      for(int tmp = statsIndex; tmp > 0; tmp--)
+        statsIt.next();
+      
     if(terminated()) return true;
     if(!statsIt.hasNext()) {
-      if(edgeType == RTSimGlobals.OSTAT_TYPE_2EDGE_1) fetchStatements2();
+      if(edgeType == RTSimGlobals.OSTAT_TYPE_2EDGE_1) {
+          fetchStatements2();
+      }
       if(!statsIt.hasNext()) {
         // statement-loser Takt
         statPos = getCurrentPositionRange();
@@ -948,8 +950,15 @@ public class RTProgram {
       busesUpdate();
       currentStatement = st;
       if(!statsIt.hasNext()) { // Taktwechsel
-      if(edgeType == RTSimGlobals.OSTAT_TYPE_2EDGE_1) fetchStatements2();
-      else cycleChange();
+        if(edgeType == RTSimGlobals.OSTAT_TYPE_2EDGE_1) {
+            fetchStatements2();
+        } else {
+            cycleChange();
+        }
+        return true;
+      }
+      if(edgeType != RTSimGlobals.OSTAT_TYPE_2EDGE_2) {
+        statsIndex++;
       }
       return true;
     }
