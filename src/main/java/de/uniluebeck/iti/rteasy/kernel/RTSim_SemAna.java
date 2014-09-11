@@ -493,7 +493,6 @@ public class RTSim_SemAna {
 
   public int checkIfStatement(ASTIf_Stat if_stat, int ostat_type) {
     int errorCount = checkExpression(if_stat.getExpression(),1);
-    if(exprContainsBus(if_stat.getExpression()) && RTOptions.noisyWarnings) insertWarning(IUI.get("WARNING_BUS_IN_IFCOND"),if_stat.getExpression().getPositionRange());
     errorCount += checkInnerParallelStatements(if_stat.getThen(),ostat_type);
     if(if_stat.hasElse()) errorCount += checkInnerParallelStatements(if_stat.getElse(),ostat_type);
     return errorCount;
