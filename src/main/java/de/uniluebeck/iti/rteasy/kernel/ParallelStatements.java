@@ -528,7 +528,8 @@ public class ParallelStatements {
       o = sl.get(i);
       if(o instanceof Statement) back.add(o);
       else if(o instanceof IfStatement)
-        back.addAll(((IfStatement) o).getStatements(edgeType, registers, regarrays));
+        //back.addAll(((IfStatement) o).getStatements(edgeType, registers, regarrays));
+          back.add(o);
       else if(o instanceof SwitchStatement){
     	  back.addAll(((SwitchStatement) o).getStatements(edgeType, registers, regarrays));
       }
@@ -541,16 +542,25 @@ public class ParallelStatements {
     ArrayList temp = getStatements(edgeType,index, registers, regarrays);
     ArrayList reg2bus = new ArrayList();
     ArrayList others = new ArrayList();
+    ArrayList ifs = new ArrayList();
     Statement st;
     for(ListIterator statIt = temp.listIterator();statIt.hasNext();) {
-      st = (Statement) statIt.next();
-      if(st.hasBusOnLeftSide() || 
-    		  st.getStatementType() == RTSimGlobals.IFBAILOUT)
-        reg2bus.add(st);
-      else
-        others.add(st);
+      Object o = statIt.next();
+      if(o instanceof Statement) {
+          st = (Statement) o;
+        if(st.hasBusOnLeftSide())
+          reg2bus.add(st);
+        // dieser Zweig ist jetzt eventuell überflüssig
+        else if (st.getStatementType() == RTSimGlobals.IFBAILOUT)
+          ifs.add(st);
+        else
+          others.add(st);
+      } else if(o instanceof IfStatement) {
+          ifs.add(o);
+      }
     }
     reg2bus.addAll(others);
+    reg2bus.addAll(ifs);
     return reg2bus;
   }
 

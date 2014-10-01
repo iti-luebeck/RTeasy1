@@ -872,6 +872,22 @@ public class RTProgram {
         ((Bus) busElems.nextElement()).updateShowContent();
   }
 
+  private void nestedIfStatements(IfStatement ifSt) {
+    ArrayList statements = ifSt.getStatements(edgeType, registers, regarrays);
+    statsIt.remove();
+    for(int i = statements.size()-1; i >= 0;i--) {
+        //Object statement:statements
+        if(statements.get(i) instanceof Statement) {
+          statsIt.add(statements.get(i));
+          statsIt.previous();
+        } else if(statements.get(i) instanceof IfStatement) {
+            statsIt.add(statements.get(i));
+            statsIt.previous();
+            nestedIfStatements((IfStatement)statements.get(i));
+        }
+    }
+  }
+  
   /**
    * F&uuml;hrt einen Taktzyklus aus
    * @return true bei korrekter Ausf&uuml;hrung, false bei Fehler
@@ -879,27 +895,37 @@ public class RTProgram {
   public boolean step() {
     if(terminated()) return true;
     Statement st;
-    for(int tmp = 0; tmp < stats.size(); tmp++) {
-        initStats();
-        for(int tmp2 = 0; tmp2 < tmp; tmp2++)
-            statsIt.next();
-        
-      st = (Statement) statsIt.next();
+    Object o;
+    while(statsIt.hasNext()) {
+      o = statsIt.next();
+      if(o instanceof IfStatement) {
+          nestedIfStatements((IfStatement)o);
+          o = statsIt.next();
+      }
+      st = (Statement) o;
       statPos = st.getPositionRange();
       if(!st.exec()) return false;
       currentStatement = st;
     }
-    if(edgeType == RTSimGlobals.OSTAT_TYPE_2EDGE_1) {
-      fetchStatements2();
-      while(statsIt.hasNext()) {
-        st = (Statement) statsIt.next();
-        statPos = st.getPositionRange();
-        if(!st.exec()) return false;
-        currentStatement = st;
-      }
+    if(!pc.hasRuntimeError()) {
+        if(edgeType == RTSimGlobals.OSTAT_TYPE_2EDGE_1) {
+          fetchStatements2();
+          while(statsIt.hasNext()) {
+            o = statsIt.next();
+            if (o instanceof IfStatement) {
+                nestedIfStatements((IfStatement)o);
+                o = statsIt.next();
+            }
+            st = (Statement) o;
+            statPos = st.getPositionRange();
+            if(!st.exec()) return false;
+            currentStatement = st;
+          }
+        }
+        cycleChange();
+        return true;
     }
-    cycleChange();
-    return true;
+    return false;
   }
 
   /**
@@ -925,25 +951,28 @@ public class RTProgram {
   }
 
   public boolean microStep() {
-      if(edgeType != RTSimGlobals.OSTAT_TYPE_2EDGE_2) {
-        initStats();
-      }
-      for(int tmp = statsIndex; tmp > 0; tmp--)
-        statsIt.next();
-      
     if(terminated()) return true;
     if(!statsIt.hasNext()) {
       if(edgeType == RTSimGlobals.OSTAT_TYPE_2EDGE_1) {
           fetchStatements2();
       }
       if(!statsIt.hasNext()) {
-        // statement-loser Takt
-        statPos = getCurrentPositionRange();
-        cycleChange();
-        return true;
+        if(!pc.hasRuntimeError()) {
+          // statement-loser Takt
+          statPos = getCurrentPositionRange();
+          cycleChange();
+          return true;
+        } else {
+            return false;
+        }
       }
     }
-    Statement st = (Statement) statsIt.next();
+    Object o = statsIt.next();
+    if(o instanceof IfStatement) {
+        nestedIfStatements((IfStatement)o);
+        o = statsIt.next();
+    }
+    Statement st = (Statement) o;
     statPos = st.getPositionRange();
     
     if(st.exec()) {
@@ -953,12 +982,12 @@ public class RTProgram {
         if(edgeType == RTSimGlobals.OSTAT_TYPE_2EDGE_1) {
             fetchStatements2();
         } else {
-            cycleChange();
+            if(!pc.hasRuntimeError()) {
+              cycleChange();
+            } else {
+                return false;
+            }
         }
-        return true;
-      }
-      if(edgeType != RTSimGlobals.OSTAT_TYPE_2EDGE_2) {
-        statsIndex++;
       }
       return true;
     }

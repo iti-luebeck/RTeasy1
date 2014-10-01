@@ -1514,8 +1514,10 @@ public abstract class RTSimWindow extends JFrame implements ActionListener {
 			bk = false;
 		}
 		PositionRange tpr = rtprog.getCurrentPositionRange();
-		if (!rtprog.step())
+		if (!rtprog.step()) {
 			maintenance(rtprog.getErrorMessage());
+                        logLine(rtprog.getErrorMessage());
+                }
 		if (rtprog.terminated()) {
 			logTermination();
 			bk = false;
@@ -1534,8 +1536,10 @@ public abstract class RTSimWindow extends JFrame implements ActionListener {
 		}
 		PositionRange tpr = rtprog.getCurrentPositionRange();
 		unsetStepMark();
-		if (!rtprog.microStep())
+		if (!rtprog.microStep()) {
 			maintenance(rtprog.getErrorMessage());
+                        logLine(rtprog.getErrorMessage());
+                }
 		if (rtprog.terminated())
 			logTermination();
 		Statement st = rtprog.getCurrentStatement();
