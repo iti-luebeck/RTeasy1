@@ -44,7 +44,7 @@ public class RTOptions {
 	public final static int TIMING_1EDGE = 1;
 	public static int timing = TIMING_1EDGE;
 	public static boolean calculateSignals = false;
-	public static boolean noisyWarnings = false;
+	public static boolean noisyWarnings = true;
 	public static boolean emitZeroDriver = true;
 	public static boolean forceInputs = true;
 	public static String design_library = "rteasy";
@@ -76,8 +76,7 @@ public class RTOptions {
 			 * System.err.println("reading emitZeroDriver = "+emitZeroDriver); }
 			 */
 			if (p.getProperty("noisyWarnings") != null)
-				noisyWarnings = Boolean.getBoolean(p
-						.getProperty("noisyWarnings"));
+                                noisyWarnings = p.getProperty("noisyWarnings").equals("true") ? true : false;
 			if (p.getProperty("locale_Language") != null
 					&& p.getProperty("locale_Country") != null)
 				locale = new Locale(p.getProperty("locale_Language"),
