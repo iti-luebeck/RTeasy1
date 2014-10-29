@@ -32,6 +32,7 @@ package de.uniluebeck.iti.rteasy;
 import java.util.HashSet;
 
 import de.uniluebeck.iti.rteasy.gui.IUI;
+import java.math.BigInteger;
 
 public class RTSimGlobals {
   public final static int UNUSED = -1;
@@ -266,25 +267,31 @@ public class RTSimGlobals {
   }
 
   public static String boolArray2String(boolean bits[], int base) {
-    long sum = 0;
-    long pot2 = 1;
-    long pot2max = 1 << (bits.length-1);
-    for(int i=0;i<bits.length;i++,pot2*=2) if(bits[i]) sum += pot2;
+    String binValString = "";
+    for(boolean b:bits) {
+      binValString = b ? 1 + binValString : 0 + binValString;
+    }
     switch(base) {
       case RTSimGlobals.BASE_BIN:
-        String s = Long.toString(sum,2);
-        while(s.length()<bits.length) s = "0" + s;
-        return s;
+        return binValString;
       case RTSimGlobals.BASE_DEC:
-        return Long.toString(sum);
+        return new BigInteger(binValString, 2).toString(10);
       case RTSimGlobals.BASE_HEX:
-        return Long.toString(sum,16).toUpperCase();
+        return new BigInteger(binValString, 2).toString(16).toUpperCase();
       case RTSimGlobals.BASE_DEC2:
-        if(sum >= pot2max) sum = sum - 2*pot2max;
-        return Long.toString(sum);
+        if(binValString.startsWith("1")) {
+          String val = "1" + binValString.replaceAll("1", "0");
+          return new BigInteger(binValString, 2).subtract(new BigInteger(val, 2)).toString(10);
+        } else {
+          return new BigInteger(binValString, 2).toString(10);
+        }
       case RTSimGlobals.BASE_HEX2:
-        if(sum >= pot2max) sum = sum - 2*pot2max;
-        return Long.toString(sum,16).toUpperCase();
+        if(binValString.startsWith("1")) {
+          String val = "1" + binValString.replaceAll("1", "0");
+          return new BigInteger(binValString, 2).subtract(new BigInteger(val, 2)).toString(16);
+        } else {
+          return new BigInteger(binValString, 2).toString(16);
+        }
       default:
         return "<WRONG BASE>";
     }
