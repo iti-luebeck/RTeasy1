@@ -1,8 +1,15 @@
 RTeasy
-===============
+======
 
 RTeasy is a development environment for register transfer language which
 offers functions to design and simulate a register transfer program.
+
+Download
+--------
+
+Download the latest release here:
+
+https://wiki.iti.uni-luebeck.de/redmine/projects/rteasy/files
 
 How to build
 ------------
