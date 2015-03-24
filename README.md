@@ -4,6 +4,9 @@ RTeasy
 RTeasy is a development environment for register transfer language which
 offers functions to design and simulate a register transfer program.
 
+As of March 2015, RTEasy has been succeeded by [Desert][desert]. We encourage everyone to
+migrate over. RTEasy will receive no further updates.
+
 Download
 --------
 
@@ -46,6 +49,7 @@ RTeasy was developed at the [Institute of Computer Engineering][iti], University
 The primary contributors were Carsten Albrecht, Carina Hauft, Hagen Schendel and Torben Schneider.
 It is made open source under the terms of the BSD license.
 
+[desert]:https://github.com/iti-luebeck/Desert
 [maven]:http://maven.apache.org/
 [iti]:http://www.iti.uni-luebeck.de
 [rteasy-github-issues]:https://github.com/iti-luebeck/rteasy/issues
